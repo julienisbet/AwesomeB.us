@@ -8,9 +8,10 @@ $(document).ready(function () {
     // var end_location   ="market and beale st, san francisco";
     // var start_location ="market and 6th st, san francisco";
     var departure_time = Math.round(new Date().getTime()/1000);
-    var arrival_time = (Math.round(new Date().getTime()/1000)) + 3600;
+    var arrival_time = Math.round(new Date().getTime()/1000) + 3600;
     $.get("https://maps.googleapis.com/maps/api/directions/json?alternatives=true&origin=" + start_location + "&destination=" + end_location + "&sensor=false&arrival_time=" + arrival_time + "&mode=transit", function(data){
-      $.each(data.routes, function(i,v){ 
+      $.each(data.routes, function(i,v){
+        console.log("Route number:" + (i + 1) + "");
         var legs = v.legs[0]
         var steps = legs.steps
         $.each(steps, function(i, step) { 
@@ -52,7 +53,7 @@ $(document).ready(function () {
                         predictions = predictionXML.getElementsByTagName('prediction');
                         for (var i = 0; i < predictions.length; i++) {
                           predictionTime.push(predictions[i].attributes[1].nodeValue);
-                          $('#whatever').append("<br>SFMTA " + (parseFloat(predictionTime[i])/60) + "<br>");
+                          $('#whatever').append("<br>" + agency + " " + (parseFloat(predictionTime[i])/60) + "<br>");
                         };
                       });
                     };
