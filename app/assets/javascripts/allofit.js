@@ -8,6 +8,7 @@ $(document).ready(function () {
     // var end_location   ="market and beale st, san francisco";
     // var start_location ="market and 6th st, san francisco";
     var departure_time = Math.round(new Date().getTime()/1000);
+
     var arrival_time = (Math.round(new Date().getTime()/1000)) + 3600;
     $.get("https://maps.googleapis.com/maps/api/directions/json?alternatives=true&origin=" + start_location + "&destination=" + end_location + "&sensor=false&arrival_time=" + arrival_time + "&mode=transit", function(data){
       $.each(data.routes, function(i,v){ 
