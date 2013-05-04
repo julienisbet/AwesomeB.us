@@ -1,46 +1,56 @@
-/*
- * This is a manifest file that'll be compiled into application.css, which will include all the files
- * listed below.
- *
- * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
- * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
- *
- * You're free to add application-wide styles to this file and they'll appear at the top of the
- * compiled file, but it's generally better to create a new file per style scope.
- *
- *= require_self
- *= require_tree .
- */
- .container-fluid { 
- 	background: url(/assets/bg.jpg) no-repeat center center fixed; 
- 	-webkit-background-size: cover;
- 	-moz-background-size: cover;
- 	-o-background-size: cover;
- 	background-size: cover;
- }
+html { 
+	height: 100% 
+}
 
+body { 
+	height: 100%; 
+	margin: 0; 
+	padding: 0 
+}
 
- #main {
- 	position: relative;
- 	background-color: ;
- }
+#map-canvas { 
+	height: 100%;
+}
+
+.outerwrapper {
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+}
+
+.innerwrapper { 
+	position:relative;
+	left:100px;
+	width: 650px;
+}
+
+ #map-canvas img{max-width:none}
+
 
  #boxes {
  	position:absolute;
  	padding-top: 10px;
-}
+ 	z-index: 100;
+	}
  
  #top-box1 {
  	border-radius: 5px;
- 	background-color: #BBDDFF;
+ 	width: 200px;
+	height: 200px;
+	background: #ee3e64;
  }
  #top-box2 {
  	border-radius: 5px;
- 	background-color: #BBFFCC;
+ 	width: 200px;
+	height: 200px;
+	background: #44accf;
   }
  #top-box3 {
  	border-radius: 5px;
- 	background-color: #FFFFBB;
+ 	width: 200px;
+	height: 200px;
+	background: #b7d84b;
  }
  #side-box1 {
  	border-radius: 5px;
