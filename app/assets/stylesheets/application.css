@@ -11,3 +11,38 @@
  *= require_self
  *= require_tree .
  */
+ .container-fluid { 
+ 	background: url(/assets/bg.jpg) no-repeat center center fixed; 
+ 	-webkit-background-size: cover;
+ 	-moz-background-size: cover;
+ 	-o-background-size: cover;
+ 	background-size: cover;
+ }
+
+
+ #main {
+ 	position: relative;
+ 	background-color: ;
+ }
+
+ #boxes {
+ 	position:absolute;
+ 	padding-top: 10px;
+}
+ 
+ #top-box1 {
+ 	border-radius: 5px;
+ 	background-color: #BBDDFF;
+ }
+ #top-box2 {
+ 	border-radius: 5px;
+ 	background-color: #BBFFCC;
+  }
+ #top-box3 {
+ 	border-radius: 5px;
+ 	background-color: #FFFFBB;
+ }
+ #side-box1 {
+ 	border-radius: 5px;
+ 	background-color: #DDFFBB;
+ }
