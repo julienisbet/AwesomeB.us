@@ -1,14 +1,42 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <title>BestBus</title>
-  <%= stylesheet_link_tag    "application", :media => "all" %>
-  <%= javascript_include_tag "application" %>
-  <%= csrf_meta_tags %>
-</head>
-<body>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title><%= content_for?(:title) ? yield(:title) : "BestBus" %></title>
+    <%= csrf_meta_tags %>
 
-<%= yield %>
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js" type="text/javascript"></script>
+    <![endif]-->
 
-</body>
+    <%= stylesheet_link_tag "application", :media => "all" %>
+
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8tBapKoGALwmL7O4q9BsWKhewuVqqcfo&sensor=false">
+    </script>
+
+  </head>
+  <body>
+    <div id="map-canvas">
+    </div>
+    <div class="outerwrapper">
+      <div class="innerwrapper">
+        <%= yield %>
+
+        <footer>
+            <p>&copy; 3 Girls, a Guy and a <strike>Rails</strike> backbone.js App 2013</p>
+        </footer>
+      </div>
+    </div>
+
+    <!-- Javascripts
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <%= javascript_include_tag "application" %>
+  </body>
 </html>
+
+
