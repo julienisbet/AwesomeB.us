@@ -1,0 +1,57 @@
+html { 
+  height: 100% 
+}
+
+body { 
+  height: 100%; 
+  margin: 0; 
+  padding: 0 
+}
+
+#map-canvas { 
+  height: 100%;
+}
+
+.outerwrapper {
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+}
+
+.innerwrapper { 
+  position:relative;
+  left:100px;
+  width: 650px;
+}
+
+ #map-canvas img{max-width:none}
+
+ #boxes {
+  position:absolute;
+  padding-top: 10px;
+  z-index: 100;
+  }
+ 
+ #top-box1 {
+  border-radius: 5px;
+  width: 200px;
+  height: 200px;
+  background: #ee3e64;
+ }
+ #top-box2 {
+  border-radius: 5px;
+  width: 200px;
+  height: 200px;
+  background: #44accf;
+  }
+ #top-box3 {
+  border-radius: 5px;
+  width: 200px;
+  height: 200px;
+  background: #b7d84b;
+ }
+ #side-box1 {
+  border-radius: 5px;
+  background-color: #DDFFBB;
+ }

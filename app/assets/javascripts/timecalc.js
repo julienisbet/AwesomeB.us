@@ -1,10 +1,3 @@
-var leg = {
-  departureSeconds: "400",
-  walkTime: 242,
-  leaveInXSeconds: function() { return secondsToLeaveIn(this.departureSeconds, this.walkTime); },
-  leaveAtTimes: function() { return leaveAtTimes(this.departureSeconds, this.walkTime); }
-}
-
 function secondsToLeaveIn(departureSeconds, walkTime) {
   return (parseInt(departureSeconds) - walkTime);
 }
@@ -20,4 +13,7 @@ function leaveAtTimes(departureSeconds, walkTime) {
   var time = (hours + " : " + UTCMinutes + " : " + UTCSeconds);
   return time
 }
+
+console.log(leg.leaveAtTimes());
+console.log(leg.leaveInXSeconds());
 

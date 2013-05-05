@@ -1,0 +1,110 @@
+.route-info {
+  height: 8%;
+  width: 100%;
+  background-color: gray;
+  top: 0;
+  margin: 5px 0 5px;
+  position: fixed;
+}
+
+.center-div {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-top: -4em; /*set to a negative number 1/2 of your height*/
+  margin-left: -6em; /*set to a negative number 1/2 of your width*/
+}
+
+.bottom-div {
+  height: 18%;
+  width: 100%;
+  background-color: gray;
+  bottom: 0;
+  margin: 5px 0 5px;
+  position: fixed;
+}
+
+.bottom-div .home-nav {
+  width: auto;
+  height: 100%;
+  float: right;
+  padding-right: 5px;
+}
+
+.bottom-div .circle {
+  width: auto;
+  height: 100%;
+  float: left;
+  padding-left: 20px;
+}
+
+.timer {
+
+}
+
+.current-route {
+  height:100%;
+  background:gray;
+}
+
+.current-route p {
+  font-size: 2em;
+  margin:-0.1em 0 0 0;
+  text-align:center;
+  font-family: 'Roboto', sans-serif;
+}
+
+.this-route {
+  width:32%;
+  height:100%;
+  float:left;
+  margin:0 0 0 1%;
+  background:#bada55;
+}
+
+a .go {
+  width: 75%;
+  margin: 0 auto;
+  position: center;
+}
+
+.spin {
+  width: 75%;
+  margin: 0 auto;
+  position: center;
+}
+
+ul {
+  margin: 0 auto;
+  position: center;
+  padding: 0;
+  list-style-type: none;
+}
+
+ul li {
+  width: 100%;
+  display: inline;
+}
+
+ul li:first-child {
+  padding-left: 5px;
+}
+
+input {
+  width:44%;
+}
+
+ul #fetch {
+  width: 28%;
+  background-color:;
+}
+
+.hidden {
+  display: none;
+}
+
+body {
+  background-image: url('defaultbackground1.jpg');
+  background-size: cover;
+  background-position: center;
+}
