@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-  $('form').on('submit', function(e) {
+  $("a .go").on('click', function(e) {
     e.preventDefault();
 
     var start_loc = getStartLoc();
@@ -74,15 +74,6 @@ $(document).ready(function () {
           }//end of travel mode if else
         })//end of step each
       })// end of routes each
-
-      $.each(routes, function(index, route) {
-        if (route[0].travel_mode == "TRANSIT") {
-          //walkTime = 0
-        } else {
-          var walkTime = route[0].travel_time;
-          console.log(route);
-        }//end of if
-      })//end of second routes each
     })//end of google get
   })//end of form submit
 })//end of doc ready

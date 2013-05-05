@@ -1,6 +1,3 @@
-var timer;
-var totalSeconds;
-
 function drawTimer(element,color,text,time){
       var c = $("#" + element)
       var container = $(c).parent();
@@ -68,10 +65,3 @@ function displayTimer(total_seconds) {
       drawTimer('secondsTimer',"yellow","SECONDS",seconds--)
       }, 1000)
 }
-
-displayTimer(1000)
-
-
-
-
-

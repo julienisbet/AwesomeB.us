@@ -14,6 +14,5 @@ function leaveAtTimes(departureSeconds, walkTime) {
   return time
 }
 
-console.log(leg.leaveAtTimes());
-console.log(leg.leaveInXSeconds());
-
+// console.log(leg.leaveAtTimes());
+// console.log(leg.leaveInXSeconds());

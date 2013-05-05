@@ -1,13 +1,37 @@
+  var directionsDisplay;
+  var directionsService = new google.maps.DirectionsService();
+  var map;
 
-function initialize() {
-  var mapOptions = {
-    center: new google.maps.LatLng(37.7750, -122.4183),
-    zoom: 12,
-    mapTypeId: google.maps.MapTypeId.ROADMAP
-  };
-  var map = new google.maps.Map(document.getElementById("map-canvas"),
-    mapOptions);
-}
-google.maps.event.addDomListener(window, 'load', initialize);
+  function initializeMap() {
+    directionsDisplay = new google.maps.DirectionsRenderer();
+    var mapOptions = {
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+    }
+    map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+    directionsDisplay.setMap(map);
+    calcRoute();
+  }
 
-// center: new google.maps.LatLng(37.7750, 122.4183),
+  function calcRoute() {
+    var start = $("input#start_location").val();
+    var end = $("input#end_location").val();
+    var request = {
+        origin:start,
+        destination:end,
+        travelMode: google.maps.DirectionsTravelMode.TRANSIT,
+        provideRouteAlternatives: true,
+        unitSystem: google.maps.UnitSystem.IMPERIAL,
+    };
+    directionsService.route(request, function(response, status) {
+      if (status == google.maps.DirectionsStatus.OK) {
+        directionsDisplay.setDirections(response);
+        directionsDisplay.setRouteIndex(1);
+        console.log(response);
+        console.log(directionsDisplay.getRouteIndex())
+      }
+    });
+  }
+
+$("a .go").on("click", function(e){
+  initializeMap();
+})

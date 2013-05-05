@@ -12,14 +12,14 @@
 <div class="route-info">
   <ul id="input">
     <form class="user-input">
-      <li><input type="text" id="start_loc" value="Current Location"></li>
-      <li id="end"><input type="text" id="end_loc" placeholder="Destination" autofocus="autofocus"></li>
+      <li><input type="text" id="start_location" value="Current Location"></li>
+      <li id="end"><input type="text" id="end_location" placeholder="Destination" autofocus="autofocus"></li>
     </form>
   </ul>
   <ul id="fetch" class="hidden">
-    <li><input type="text" readonly="readonly" id="fetch" value="Route..."></li>
-    <li><input type="text" readonly="readonly" id="fetch" value="Leave At..."></li>
-    <li><input type="text" readonly="readonly" id="fetch" value="Arrive At..."></li>
+    <li><input type="text" readonly="readonly" id="fetch" class="route" value="Route..."></li>
+    <li><input type="text" readonly="readonly" id="fetch" class="leave" value="Leave At..."></li>
+    <li><input type="text" readonly="readonly" id="fetch" class="arrive" value="Arrive At..."></li>
   </ul>
   <div class="current-route hidden">
     <div class="this-route" id="route-name"><p>L</p></div>
@@ -30,7 +30,6 @@
 
 <div class="center-div">
   <a class="go"><%= image_tag "go.png", class: "go" %></a>
-  <%= image_tag "ajax-loader1.gif", class: "spin hidden" %>
 </div>
 
 <div class="bottom-div">
