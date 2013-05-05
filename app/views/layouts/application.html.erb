@@ -13,29 +13,26 @@
     <![endif]-->
 
     <%= stylesheet_link_tag "application", :media => "all" %>
-
-    <script type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8tBapKoGALwmL7O4q9BsWKhewuVqqcfo&sensor=false">
-    </script>
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 
   </head>
   <body>
-    <div id="map-canvas">
-    </div>
-    <div class="outerwrapper">
-      <div class="innerwrapper">
-        <%= yield %>
-
-        <footer>
-            <p>&copy; 3 Girls, a Guy and a <strike>Rails</strike> backbone.js App 2013</p>
-        </footer>
+      <div id="map-canvas">
       </div>
-    </div>
+      <div class="outerwrapper">
+        <div class="innerwrapper">
+          <%= yield %>
 
-    <!-- Javascripts
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <%= javascript_include_tag "application" %>
+          <footer>
+              <!-- <p>&copy; 3 Girls, a Guy and a <strike>Rails</strike> backbone.js App 2013</p> -->
+          </footer>
+        </div>
+      </div>
+
+      <!-- Javascripts
+      ================================================== -->
+      <!-- Placed at the end of the document so the pages load faster -->
+      <%= javascript_include_tag "application" %>
   </body>
 </html>
 
