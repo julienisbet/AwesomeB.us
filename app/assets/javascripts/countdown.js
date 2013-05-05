@@ -29,5 +29,3 @@ function UpdateTimer() {
 function LeadingZero(time) {
   return (time < 10) ? "0" + time : + time;
 }
-
-CreateTimer("timer", 30);

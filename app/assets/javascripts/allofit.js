@@ -10,8 +10,8 @@ $(document).ready(function () {
 
     var query_url = googleQueryUrl(start_loc, end_loc, dep_time);
 
+    var routes = [];
     $.get(query_url, function(result) {
-      var routes = [];
       $.each(result.routes, function(index, google_routes) {
         var google_steps = google_routes.legs[0].steps;
         var steps = [];
@@ -25,9 +25,7 @@ $(document).ready(function () {
             steps.push(current_step);
           }//end of if else
         })//end of each
-
         routes.push(steps);
-      
       })//end of each
 
       $.each(routes, function(index, route) {
@@ -35,7 +33,6 @@ $(document).ready(function () {
           if (step.travel_mode == "WALKING") {
             //manipulate time?
           } else {
-
             if (step.agency == "San Francisco Municipal Transportation Agency") {
               var stopTagQueryURL = nextBusStopTag(step.line_short_name);
 
@@ -61,7 +58,8 @@ $(document).ready(function () {
                           var prediction_time = prediction.attributes[1].nodeValue;
 
                           myDeparture.departure_times.push(prediction_time);
-                          step.departure = myDeparture;
+                          debugger;
+                          step.departures.push(myDeparture);
                         })//end of prediction each
                       })//end of departure time predictions get
                     }//end of latitude and longitude comparison if
@@ -71,13 +69,20 @@ $(document).ready(function () {
             }//end of agency if
           }//end of travel mode if else
         })//end of step each
-      })// end of route each
-      console.log(routes);
-    })// end of google get
+      })// end of routes each
 
-  }) //end of form submit
-
-})// end of doc ready
+      $.each(routes, function(index, route) {
+        if (route[0].travel_mode == "TRANSIT") {
+          //walkTime = 0
+        } else {
+          var walkTime = route[0].travel_time;
+          debugger;
+          console.log(route[1].departure.departure_times[0]);
+        }//end of 
+      })//end of second routes each
+    })//end of google get
+  })//end of form submit
+})//end of doc ready
 
 function roundNumber(number,decimal_points) {
   if(!decimal_points) return Math.round(number);
@@ -136,10 +141,11 @@ function TransitStep(step) {
   this.end_longitude = step.end_location.lng;
   this.line_name = step.transit_details.line.name;
   this.line_short_name = step.transit_details.line.short_name;
+  this.departures = [];
 }
 
 function WalkingStep(step) {
-  this.travel_mode = "WALKING";
+  this.travel_mode = step.travel_mode;
   this.travel_time = step.duration.value;
   this.start_latitude = roundNumber(step.start_location.lat, 5);
   this.start_longitude = roundNumber(step.start_location.lng, 5);
