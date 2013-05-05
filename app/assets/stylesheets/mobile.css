@@ -16,9 +16,9 @@
 }
 
 .bottom-div {
-  height: 18%;
+  height: 25%;
   width: 100%;
-  background-color: gray;
+  background-color: black;
   bottom: 0;
   margin: 5px 0 5px;
   position: fixed;
@@ -29,13 +29,6 @@
   height: 100%;
   float: right;
   padding-right: 5px;
-}
-
-.bottom-div .circle {
-  width: auto;
-  height: 100%;
-  float: left;
-  padding-left: 20px;
 }
 
 .timer {

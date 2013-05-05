@@ -1,4 +1,4 @@
-<h2>Awesomest Bus!</h2>
+<!-- <h2>Awesomest Bus!</h2>
 <ul>
   <form>
     <li>Start location: <input type="text" id="start_location" name="start_location"></li>
@@ -7,7 +7,7 @@
     <li>Arrival time: <input type="text" name="arrival_time"></li>
     <input type="submit">
   </form>
-</ul>
+</ul> -->
 
 <div class="route-info">
   <ul id="input">
@@ -34,10 +34,7 @@
 </div>
 
 <div class="bottom-div">
-  <!-- <div class="timer"/> -->
-    <%= image_tag "circlepurple.png", class: "circle hidden" %>
-    <%= image_tag "circlegreen.png", class: "circle hidden" %>
-  <!-- <div class="homeclearsomething"/> -->
-    <a href="/"><%= image_tag "home.png", class: "home-nav" %></a>
+  <canvas id="minutesTimer"></canvas>
+  <canvas id="secondsTimer"></canvas>
+  <a href="/"><%= image_tag "home.png", class: "home-nav" %></a>
 </div>
-
