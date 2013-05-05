@@ -28,8 +28,8 @@ $(document).ready(function () {
         routes.push(steps);
       })//end of each
 
-      $.each(routes, function(index, route) {
-        $.each(route, function(index, step) {
+      $.each(routes, function(route_index, route) {
+        $.each(route, function(step_index, step) {
           if (step.travel_mode == "WALKING") {
             //manipulate time?
           } else {
@@ -39,7 +39,7 @@ $(document).ready(function () {
               $.get(stopTagQueryURL, function(result) {
                 var stops = result.getElementsByTagName('stop');
 
-                $.each(stops, function(index, stop) {
+                $.each(stops, function(stop_index, stop) {
 
                   if (stop.attributes.length > 1) {
                     var roundedLatitude = roundNumber((stop.attributes[2].nodeValue), 5);
@@ -54,14 +54,18 @@ $(document).ready(function () {
                       $.get(predictionsQueryURL, function(result) {
                         var predictions = result.getElementsByTagName('prediction');
 
-                        $.each(predictions, function(index, prediction) {
-                          var prediction_time = prediction.attributes[1].nodeValue;
-
-                          myDeparture.departure_times.push(prediction_time);
-                          debugger;
-                          step.departures.push(myDeparture);
+                        $.each(predictions, function(prediction_index, prediction) {
+                          var prediction_seconds = prediction.attributes[1].nodeValue;
+                          var walk_time = route[step_index - 1].travel_time;
+                          myDeparture.departure_seconds.push(prediction_seconds);
+                          var leave_seconds = function() { return secondsToLeaveIn(prediction_seconds, walk_time); }
+                          myDeparture.leave_in_seconds.push(leave_seconds());
+                          var leave_time = function() { return leaveAtTimes(prediction_seconds, walk_time); }
+                          myDeparture.leave_at_times.push(leave_time());
                         })//end of prediction each
                       })//end of departure time predictions get
+                      // console.log(myDeparture);
+                      step.departure = myDeparture;
                     }//end of latitude and longitude comparison if
                   }//end of stop attribute length if
                 })//end of stop each
@@ -76,9 +80,8 @@ $(document).ready(function () {
           //walkTime = 0
         } else {
           var walkTime = route[0].travel_time;
-          debugger;
-          console.log(route[1].departure.departure_times[0]);
-        }//end of 
+          console.log(route);
+        }//end of if
       })//end of second routes each
     })//end of google get
   })//end of form submit
@@ -141,7 +144,6 @@ function TransitStep(step) {
   this.end_longitude = step.end_location.lng;
   this.line_name = step.transit_details.line.name;
   this.line_short_name = step.transit_details.line.short_name;
-  this.departures = [];
 }
 
 function WalkingStep(step) {
@@ -174,5 +176,7 @@ function nextBusPredictions(line_short_name, stop_tag_name) {
 
 function Departure(name) {
   this.tag_name = name;
-  this.departure_times = [];
+  this.departure_seconds = [];
+  this.leave_in_seconds = [];
+  this.leave_at_times = [];
 }
