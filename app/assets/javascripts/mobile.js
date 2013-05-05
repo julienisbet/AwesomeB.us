@@ -6,7 +6,7 @@ $(document).ready(function(){
     }
   })
 
-  $("form #start_loc").focusout(function (e) {
+  $("form #start_loc").focusout(function (e) { 
     if ($(this).val() == "") {
       $(this).val("Current Location");
     }
@@ -31,12 +31,16 @@ $(document).ready(function(){
     location.reload();
   });
 
+  setTimeout(function() {populateRouteInfo()},6000);
+
+  function populateRouteInfo() {
+    $("#fetch.route").val("J-line");
+    $("#fetch.leave").val("leaving now!");
+    $("#fetch.arrive").val("arriving soon!");
+  }
+
 });
 
-  // $(document.body).click(function () {
-  //   if ($("div:first").is(":hidden")) {
-  //     $("div").show("slow");
-  //   } else {
-  //     $("div").slideUp();
-  //   }
-  // });
+   // <li><input type="text" readonly="readonly" id="fetch" class="route" value="Route..."></li>
+   //  <li><input type="text" readonly="readonly" id="fetch" class="leave" value="Leave At..."></li>
+   //  <li><input type="text" readonly="readonly" id="fetch" class="arrive" value="Arrive At...">
