@@ -43,27 +43,28 @@ function googleQueryUrl(start_loc, end_loc, dep_time) {
   return (query_url + "&mode=transit")
 }
 
-function TransitStep(step, transit_times) {
+function TransitStep(step, transit_seconds, google_step) {
   this.travel_mode = step.travel_mode;
   this.travel_time = step.duration.value;
-  this.start_latitude = roundNumber(step.start_location.lat, 5);
-  this.start_longitude = roundNumber(step.start_location.lng, 5);
-  this.agency = step.transit_details.line.agencies[0].name;
-  this.direction = step.transit_details.headsign;
-  this.start_stop_name = step.transit_details.departure_stop.name;
-  this.end_stop_name = step.transit_details.arrival_stop.name;
-  this.end_latitude = step.end_location.lat;
-  this.end_longitude = step.end_location.lng;
-  this.line_name = step.transit_details.line.name;
-  this.line_short_name = step.transit_details.line.short_name;
-  this.transit_times = transit_times;
+  this.start_latitude = roundNumber(step.transit.arrival_stop.location.lat(), 5);
+  this.start_longitude = roundNumber(step.transit.arrival_stop.location.lng(), 5);
+  this.agency = step.transit.line.agencies[0].name;
+  this.direction = step.transit.headsign;
+  this.start_stop_name = step.transit.departure_stop.name;
+  this.end_stop_name = step.transit.arrival_stop.name;
+  this.end_latitude = step.end_location.lat();
+  this.end_longitude = step.end_location.lng();
+  this.line_name = step.transit.line.name;
+  this.line_short_name = step.transit.line.short_name;
+  this.transit_seconds = transit_seconds;
+  this.google_step = google_step;
 }
 
 function WalkingStep(step) {
   this.travel_mode = step.travel_mode;
   this.travel_time = step.duration.value;
-  this.start_latitude = roundNumber(step.start_location.lat, 5);
-  this.start_longitude = roundNumber(step.start_location.lng, 5);
+  this.start_latitude = roundNumber(step.start_location.lat(), 5);
+  this.start_longitude = roundNumber(step.start_location.lng(), 5);
 }
 
 function Trip(start_loc, end_loc, dep_time, arr_time) {

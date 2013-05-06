@@ -39,8 +39,12 @@ $(document).ready(function(){
     $("#fetch.arrive").val("arriving soon!");
   }
 
-});
+  $(".dropdown").on("click", function(){
+    $(".dropdownlist").slideDown();
+  });
 
-   // <li><input type="text" readonly="readonly" id="fetch" class="route" value="Route..."></li>
-   //  <li><input type="text" readonly="readonly" id="fetch" class="leave" value="Leave At..."></li>
-   //  <li><input type="text" readonly="readonly" id="fetch" class="arrive" value="Arrive At...">
+  $(document).on("click", ".dropdownlist", function(){
+    $(".dropdownlist").slideUp();
+  });
+
+});

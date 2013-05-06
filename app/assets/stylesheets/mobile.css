@@ -1,10 +1,38 @@
 .route-info {
-  height: 8%;
+  height: 25px;
   width: 100%;
   background-color: gray;
   top: 0;
   margin: 5px 0 5px;
   position: fixed;
+  z-index:1;
+}
+
+.dropdown {
+  background-color: gray;
+  position: fixed;
+  border-radius: 4px;
+  height: 45px;
+  width: 50px;
+  margin: 5px;
+}
+
+.dropdown ul li {
+  display: block;
+  padding: 4px 4px;
+  margin: 1px;
+  font-size: 18px;
+  white-space: nowrap;
+  border-radius: 3px;
+}
+
+.dropdownlist {
+  position:absolute;
+  top:25px;
+  background: gray;
+  border-bottom-left-radius:3px;
+  border-bottom-right-radius:3px;
+  display: none;
 }
 
 .center-div {
