@@ -31,13 +31,7 @@ $(document).ready(function(){
     location.reload();
   });
 
-  setTimeout(function() {populateRouteInfo()},6000);
-
-  function populateRouteInfo() {
-    $("#fetch.route").val("J-line");
-    $("#fetch.leave").val("leaving now!");
-    $("#fetch.arrive").val("arriving soon!");
-  }
+  // setTimeout(function() {populateRouteInfo()},6000);
 
   $(".dropdown").on("click", function(){
     $(".dropdownlist").slideDown();
