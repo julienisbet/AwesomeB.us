@@ -33,6 +33,7 @@ function googleRoutes(cb) {
 
     $.each(google_routes, function(index, google_route) {
       var google_steps = google_route.legs[0].steps;
+      var total_travel_time = google_route.legs[0].duration.value;
 
       transitOrWalkingStep(google_steps, function(steps) {
         var route = {};
@@ -41,7 +42,10 @@ function googleRoutes(cb) {
         route.leave_seconds = leave_seconds;
         var leave_times = calculateTimeToLeaveAt(steps);
         route.leave_times = leave_times;
+        var arrive_times = calculateTimeToArriveAt(route.leave_times, total_travel_time);
+        route.arrive_times = arrive_times;
         route.google_index = index;
+        route.total_travel_time = total_travel_time;
         console.log("new goog route", route, "index", index);
         routes.push(route);
 
@@ -178,14 +182,23 @@ function calculateTimeToLeaveAt(steps_array) {
     if (step.travel_mode == "TRANSIT") {
       var muni_seconds = step.transit_seconds;
       $.each(muni_seconds, function(index, second_value) {
-        var now = leaveAtTimes(0, 0);
-        var leave_time = leaveAtTimes(second_value, walk_time);
+        var now = leaveTimeInSeconds(0, 0);
+        var leave_time = leaveTimeInSeconds(second_value, walk_time);
         if (now < leave_time) {
-          times.push(leaveAtTimes(step, walk_time));
+          times.push(leave_time);
         }
       })
     }
   })//end of calculating seconds to leave each
+  return times;
+}
+
+function calculateTimeToArriveAt(leave_times, travel_time) {
+  var times = [];
+  $.each(leave_times, function(step_index, time) {
+    var arrive_time = arriveTimeInSeconds(time, travel_time);
+    times.push(arrive_time);
+  });
   return times;
 }
 
@@ -205,7 +218,7 @@ function pushToPage(routes, chosen_index) {
   var seconds = parseInt(routes[1].leave_seconds[0]);
 
   displayTimer(seconds);
-  renderRoute(google_routes, index);
+  // renderRoute(google_routes, index);
   renderDetails(routes[chosen_index]);
 }
 

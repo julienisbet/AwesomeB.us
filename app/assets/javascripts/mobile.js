@@ -31,7 +31,7 @@ $(document).ready(function(){
     location.reload();
   });
 
-  setTimeout(function() {populateRouteInfo()},6000);
+  // setTimeout(function() {populateRouteInfo()},6000);
 
   $(".dropdown").on("click", function(){
     $(".dropdownlist").slideDown();
