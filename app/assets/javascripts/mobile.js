@@ -33,11 +33,7 @@ $(document).ready(function(){
 
   setTimeout(function() {populateRouteInfo()},6000);
 
-  function populateRouteInfo() {
-    $("#fetch.route").val("J-line");
-    $("#fetch.leave").val("leaving now!");
-    $("#fetch.arrive").val("arriving soon!");
-  }
+
 
   $(".dropdown").on("click", function(){
     $(".dropdownlist").slideDown();

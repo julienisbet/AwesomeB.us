@@ -34,5 +34,11 @@ function renderRoute(route_array, index) {
 }
 
 function renderDetails(route) {
-  //display route info in boxes
+  debugger
+  var line = route.steps[1].line_short_name;
+  var leaving_at = route.leave_times;
+  var arriving_at = route.leave_times + route.steps[1].travel_time;
+  $("#fetch.route").val(line);
+  $("#fetch.leave").val(leaving_at);
+  $("#fetch.arrive").val(arriving_at);
 };
