@@ -30,17 +30,22 @@
   position:absolute;
   top:25px;
   background: gray;
+/*  border: solid black 1px;
+  border-top: none;*/
   border-bottom-left-radius:3px;
   border-bottom-right-radius:3px;
   display: none;
 }
 
 .center-div {
+  z-index:4;
   position: fixed;
   top: 50%;
   left: 50%;
-  margin-top: -4em; /*set to a negative number 1/2 of your height*/
-  margin-left: -6em; /*set to a negative number 1/2 of your width*/
+  height:200px;
+  width:200px;
+  margin-top: -6em; /*set to a negative number 1/2 of your height*/
+  margin-left: -5em; /*set to a negative number 1/2 of your width*/
 }
 
 .bottom-div {

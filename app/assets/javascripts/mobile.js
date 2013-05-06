@@ -1,5 +1,7 @@
 $(document).ready(function(){
 
+  // drawTimer("center-div","green","GO",60);
+
   $("form #start_loc").focus(function (e) {
     if ($(this).val() == "Current Location") {
       $(this).val("");

@@ -43,7 +43,6 @@ function drawTimer(element,color,text,time){
         context.fillText(text, x - (width/2) , y + (height_num) + (height/2));
 }
 
-
 function displayTimer(total_seconds) {
   var minutes = Math.floor(total_seconds / 60);      
   var seconds = total_seconds - minutes*60;
