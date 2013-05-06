@@ -69,7 +69,6 @@ function transitOrWalkingStep(steps_array, cb) { //json array
 
   $.each(steps_array, function(step_index, step){
     var current_step;
-    console.log("step", step)
     if (step.el.travel_mode == "WALKING") {
       current_step = new WalkingStep(step.el);
       steps.push({ el: current_step, index: step.index });
@@ -86,7 +85,6 @@ function transitOrWalkingStep(steps_array, cb) { //json array
 
 function getRealTimeTransitData(step, callback) {
   if (step.transit.line.agencies[0].name == "San Francisco Municipal Transportation Agency") {
-    console.log("tranny", step)
     var line_short = step.transit.line.short_name;
     if (line_short == "CALIFORNIA") {
       line_short = "61";
@@ -157,8 +155,14 @@ function calculateSecondsToLeaveIn(steps_array) {
   var seconds = [];
   var walk_time = (firstStepIsWalking(steps_array)) ? ( steps_array[0].travel_time ) : ( 0 );
   $.each(steps_array, function(step_index, step) {
-    var sec = secondsToLeaveIn(step, walk_time);
-    if (sec > 0) { seconds.push(sec); }
+    if (step.travel_mode == "TRANSIT") {
+      var muni_seconds = step.transit_seconds;
+      $.each(muni_seconds, function(index, second_value) {
+        var sec = secondsToLeaveIn(second_value, walk_time);
+        if (sec > 0) { seconds.push(sec); }
+        console.log("sec", sec);
+      })
+    }
   })//end of calculating seconds to leave each
   return seconds;
 }
