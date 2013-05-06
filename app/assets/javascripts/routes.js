@@ -160,7 +160,6 @@ function calculateSecondsToLeaveIn(steps_array) {
       $.each(muni_seconds, function(index, second_value) {
         var sec = secondsToLeaveIn(second_value, walk_time);
         if (sec > 0) { seconds.push(sec); }
-        console.log("sec", sec);
       })
     }
   })//end of calculating seconds to leave each
@@ -176,7 +175,16 @@ function calculateTimeToLeaveAt(steps_array) {
   var times = [];
   var walk_time = (firstStepIsWalking(steps_array)) ? ( steps_array[0].travel_time ) : ( 0 );
   $.each(steps_array, function(step_index, step) {
-    times.push(leaveAtTimes(step, walk_time));
+    if (step.travel_mode == "TRANSIT") {
+      var muni_seconds = step.transit_seconds;
+      $.each(muni_seconds, function(index, second_value) {
+        var now = leaveAtTimes(0, 0);
+        var leave_time = leaveAtTimes(second_value, walk_time);
+        if (now < leave_time) {
+          times.push(leaveAtTimes(step, walk_time));
+        }
+      })
+    }
   })//end of calculating seconds to leave each
   return times;
 }
