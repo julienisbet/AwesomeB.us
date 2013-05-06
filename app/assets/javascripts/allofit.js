@@ -122,7 +122,7 @@ function googleQueryUrl(start_loc, end_loc, dep_time) {
   return (query_url + "&mode=transit")
 }
 
-function TransitStep(step) {
+function TransitStep(step, transit_times) {
   this.travel_mode = step.travel_mode;
   this.travel_time = step.duration.value;
   this.start_latitude = roundNumber(step.start_location.lat, 5);
@@ -135,6 +135,7 @@ function TransitStep(step) {
   this.end_longitude = step.end_location.lng;
   this.line_name = step.transit_details.line.name;
   this.line_short_name = step.transit_details.line.short_name;
+  this.transit_times = transit_times;
 }
 
 function WalkingStep(step) {

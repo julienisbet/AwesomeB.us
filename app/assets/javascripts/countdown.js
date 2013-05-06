@@ -9,6 +9,7 @@ function drawTimer(element,color,text,time){
       var x = canvas.width / 2;
       var y = canvas.height / 2;
       var radius = Math.min(x,y)*0.70;
+
       var start_angle = 3/2*Math.PI;
       var time_angle = 2*Math.PI / 60 * time;
         //clear previous data
@@ -44,6 +45,8 @@ function drawTimer(element,color,text,time){
 
 
 function displayTimer(total_seconds) {
+
+
       var minutes = Math.floor(total_seconds / 60);      
       var seconds = total_seconds - minutes*60;
 
@@ -65,3 +68,8 @@ function displayTimer(total_seconds) {
       drawTimer('secondsTimer',"yellow","SECONDS",seconds--)
       }, 1000)
 }
+
+  
+
+displayTimer(75);
+
