@@ -33,10 +33,12 @@ $(document).ready(function(){
 
   setTimeout(function() {populateRouteInfo()},6000);
 
+  $(".dropdown").on("click", function(){
+    $(".dropdownlist").slideDown();
+  });
 
+  $(document).on("click", ".dropdownlist", function(){
+    $(".dropdownlist").slideUp();
+  });
 
 });
-
-   // <li><input type="text" readonly="readonly" id="fetch" class="route" value="Route..."></li>
-   //  <li><input type="text" readonly="readonly" id="fetch" class="leave" value="Leave At..."></li>
-   //  <li><input type="text" readonly="readonly" id="fetch" class="arrive" value="Arrive At...">

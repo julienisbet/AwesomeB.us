@@ -1,0 +1,25 @@
+GOAL
+
+1. User says "I want to go to there"
+2. We do the normal GM routing with a NextBus Layer on top
+3. Each of the relevant stops on the route will indicate the next live bus to arrive
+
+ALGORITHM
+
+1. Take user input
+2. Get a list of routes from GM
+2a. Extract the LatLng of the bus stop and bus route
+2b. Ask NextBus for all of the stops for the route
+
+
+RULES
+
+1. Never mess with XML
+2. Avoid callback city by making a marshalling method
+
+SPIKES
+
+1. XML to JSON
+2. Async library/plugin
+3. Jasmine
+4. Google map - draw route
