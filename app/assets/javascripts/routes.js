@@ -3,7 +3,7 @@ $(document).ready(function() {
   $('a .go').on('click', function(e) {
     e.preventDefault();
     googleRoutes(function (routes) {
-      pushToPage(orderRoutes(routes));
+      pushToPage(routes, 1);
     });
   })//end of form submit
 
@@ -26,7 +26,7 @@ function googleRoutes(cb) {
     var len = google_routes.length;
 
     function areWeDone() {
-      if (routes.length == len) {
+      if (routes.length == (len + 1)) {
         cb(routes);
       }
     }
@@ -186,7 +186,7 @@ function orderRoutes(routes) {
   return routes
 }
 
-function pushToPage(routes) {
+function pushToPage(routes, chosen_index) {
   console.log("AMAZING");
   var google_routes = routes[0];
   var index = routes[1].google_index;
@@ -194,7 +194,7 @@ function pushToPage(routes) {
 
   displayTimer(seconds);
   renderRoute(google_routes, index);
-  renderDetails(routes[1]);
+  renderDetails(routes[chosen_index]);
 }
 
 
