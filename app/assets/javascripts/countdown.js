@@ -45,31 +45,25 @@ function drawTimer(element,color,text,time){
 
 
 function displayTimer(total_seconds) {
+  var minutes = Math.floor(total_seconds / 60);      
+  var seconds = total_seconds - minutes*60;
 
+  drawTimer('minutesTimer',"green","MINUTES",minutes--)
+  drawTimer('secondsTimer',"yellow","SECONDS",seconds)
 
-      var minutes = Math.floor(total_seconds / 60);      
-      var seconds = total_seconds - minutes*60;
+  var timer = setInterval(function() { 
+    if (seconds==-1) {
+      if (minutes==-1) {
+        clearInterval(timer);
+        alert("GTFO!");
+      }
+      else {
+        seconds=59
+        drawTimer('minutesTimer',"green","MINUTES",minutes--)
 
-      drawTimer('minutesTimer',"green","MINUTES",minutes--)
-      drawTimer('secondsTimer',"yellow","SECONDS",seconds)
-
-      var timer = setInterval(function() { 
-        if (seconds==-1) {
-          if (minutes==-1) {
-            clearInterval(timer);
-            alert("GTFO!");
-          }
-          else {
-            seconds=59
-            drawTimer('minutesTimer',"green","MINUTES",minutes--)
-
-          }
-        };
-      drawTimer('secondsTimer',"yellow","SECONDS",seconds--)
-      }, 1000)
+      }
+    };
+  drawTimer('secondsTimer',"yellow","SECONDS",seconds--)
+  }, 1000)
 }
-
-  
-
-displayTimer(75);
 

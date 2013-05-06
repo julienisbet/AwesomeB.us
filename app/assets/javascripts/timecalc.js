@@ -13,4 +13,3 @@ function leaveAtTimes(departureSeconds, walkTime) {
   var time = (hours + " : " + UTCMinutes + " : " + UTCSeconds);
   return time
 }
-
