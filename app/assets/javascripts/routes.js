@@ -22,7 +22,7 @@ function googleRoutes(cb) {
   calcRoutes(start_loc, end_loc, function(routes_array) {
     var google_routes = routes_array.routes;
     routes.push(routes_array);
-    console.log("OG Googs", google_routes)
+    console.log("OG Googs", routes_array)
 
     var len = google_routes.length;
 
@@ -204,11 +204,15 @@ function calculateTimeToArriveAt(leave_times, travel_time) {
 }
 
 function orderRoutes(routes) {
+  console.log("routes", routes)
   var goog_response = routes.splice(0,1);
+  console.log("google thing", goog_response)
   routes.sort(function(a, b) {
     return a.leave_seconds[0] - b.leave_seconds[0];
   })
-  routes.unshift(goog_response);
+  console.log("sorted routes", routes)
+  routes.unshift(goog_response[0]);
+  console.log("sorted with google", routes)
   return routes
 }
 

@@ -41,3 +41,10 @@ function renderDetails(route) {
   $("#fetch .leave").val(leaving_at);
   $("#fetch .arrive").val(arriving_at);
 };
+
+// function populateDropDown(routes) {
+//   debugger;
+//   $.each(routes, function(rIndex, route) {
+    
+//   });
+// }
