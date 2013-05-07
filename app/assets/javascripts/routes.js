@@ -19,8 +19,8 @@ $(document).ready(function() {
 function googleRoutes(cb) {
   var start_loc;
   var geo_loc = $('.geolocation')[0].id;
-  if (geo_loc == 'false') { start_loc = getStartLoc() }
-  else { start_loc = geo_loc }
+  if (getStartLoc() == 'Current Location') { start_loc = geo_loc }
+  else { start_loc = getStartLoc() }
   var end_loc   = getEndLoc();
   var dep_time  = getDepTime();
   var arr_time  = getArrTime();
