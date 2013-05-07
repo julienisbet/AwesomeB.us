@@ -46,8 +46,8 @@ function googleQueryUrl(start_loc, end_loc, dep_time) {
 function TransitStep(step, transit_seconds, google_step) {
   this.travel_mode = step.travel_mode;
   this.travel_time = step.duration.value;
-  this.start_latitude = roundNumber(step.transit.arrival_stop.location.lat(), 5);
-  this.start_longitude = roundNumber(step.transit.arrival_stop.location.lng(), 5);
+  this.start_latitude = roundNumber(step.transit.departure_stop.location.lat(), 5);
+  this.start_longitude = roundNumber(step.transit.departure_stop.location.lng(), 5);
   this.agency = step.transit.line.agencies[0].name;
   this.direction = step.transit.headsign;
   this.start_stop_name = step.transit.departure_stop.name;
