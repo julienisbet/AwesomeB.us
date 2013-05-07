@@ -3,7 +3,7 @@ $(document).ready(function() {
   $('a .go').on('click', function(e) {
     e.preventDefault();
     googleRoutes(function (routes) {
-      pushToPage(routes, 1);
+      pushToPage(orderRoutes(routes), 1);
     });
   })//end of form submit
 
@@ -20,8 +20,10 @@ function googleRoutes(cb) {
   var routes = [];
 
   calcRoutes(start_loc, end_loc, function(routes_array) {
-    var google_routes = routes_array.routes
+    var google_routes = routes_array.routes;
     routes.push(routes_array);
+    console.log("OG Googs", routes_array)
+
     var len = google_routes.length;
 
     function areWeDone() {
@@ -202,15 +204,17 @@ function calculateTimeToArriveAt(leave_times, travel_time) {
 }
 
 function orderRoutes(routes) {
-  var goog_route = routes.splice(0,1);
+  var goog_response = routes.splice(0,1);
   routes.sort(function(a, b) {
-    return a[1][0] - b[1][0]
+    return a.leave_seconds[0] - b.leave_seconds[0];
   })
-  routes.unshift(goog_route);
+  routes.unshift(goog_response[0]);
+
   return routes
 }
 
 function pushToPage(routes, chosen_index) {
+
   var google_routes = routes[0];
   var index = routes[1].google_index;
   var seconds = parseInt(routes[1].leave_seconds[0]);
