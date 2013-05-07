@@ -213,10 +213,7 @@ function orderRoutes(routes) {
 }
 
 function pushToPage(routes, chosen_index) {
-<<<<<<< HEAD
-  console.log("AMAZING", routes);
-=======
->>>>>>> 3c890b672319e0ddf9e474cc265d4908b2bd129d
+
   var google_routes = routes[0];
   var index = routes[1].google_index;
   var seconds = parseInt(routes[1].leave_seconds[0]);
