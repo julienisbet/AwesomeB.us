@@ -67,7 +67,7 @@ function transitOrWalkingStep(steps_array, cb) { //json array
 
   function areWeDoneStep() {
     if (steps.length === len) {
-      steps.sort(function (a, b) { return a.index > b.index });
+      steps.sort(function (a, b) { return a.index - b.index });
       cb(steps.map(function (el) { return el.el }));
     }
   }
