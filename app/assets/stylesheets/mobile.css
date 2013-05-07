@@ -1,15 +1,15 @@
 .route-info {
   height: 25px;
   width: 100%;
-  background-color: gray;
+  background-color: black;
   top: 0;
-  margin: 5px 0 5px;
+  margin: 0 0 5px;
   position: fixed;
   z-index:1;
 }
 
 .dropdown {
-  background-color: gray;
+  background-color: black;
   position: fixed;
   border-radius: 4px;
   height: 45px;
@@ -24,12 +24,18 @@
   font-size: 18px;
   white-space: nowrap;
   border-radius: 3px;
+  color:white;
+}
+
+a {
+  color:white;
 }
 
 .dropdownlist {
   position:absolute;
-  top:25px;
-  background: gray;
+  top:20px;
+  background: black;
+
 /*  border: solid black 1px;
   border-top: none;*/
   border-bottom-left-radius:3px;
@@ -53,7 +59,7 @@
   width: 100%;
   background-color: black;
   bottom: 0;
-  margin: 5px 0 5px;
+  margin: 5px 0 0;
   position: fixed;
 }
 
@@ -122,7 +128,7 @@ input {
 
 ul #fetch {
   width: 28%;
-  background-color:;
+  background-color:yellow;
 }
 
 .hidden {

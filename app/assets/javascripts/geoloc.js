@@ -1,12 +1,8 @@
-$(function(){
-  var x = $('input#start_location')
-  function getLocation() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(showPosition)
-    }
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition)
   }
-  function showPosition(position) {
-    x.val(position.coords.latitude + "," + position.coords.longitude)
-  }
-  getLocation()
-})
+}
+function showPosition(position) {
+  $(".geolocation").attr("id",position.coords.latitude + "," + position.coords.longitude);
+}
