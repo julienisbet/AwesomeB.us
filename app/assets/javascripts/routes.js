@@ -39,15 +39,21 @@ function googleRoutes(cb) {
       transitOrWalkingStep(google_steps, function(steps) {
         var route = {};
         route.steps = steps;
-        var leave_seconds = calculateSecondsToLeaveIn(steps);
-        route.leave_seconds = leave_seconds;
-        var leave_times = calculateTimeToLeaveAt(steps);
-        route.leave_times = leave_times;
-        var arrive_times = calculateTimeToArriveAt(route.leave_times, total_travel_time);
-        route.arrive_times = arrive_times;
+        console.log(steps);
+        if (noPredictionErrors(steps)) {
+          var leave_seconds = calculateSecondsToLeaveIn(steps);
+          route.leave_seconds = leave_seconds;
+          var leave_times = calculateTimeToLeaveAt(steps);
+          route.leave_times = leave_times;
+          var arrive_times = calculateTimeToArriveAt(route.leave_times, total_travel_time);
+          route.arrive_times = arrive_times;
+        } else {
+          route.leave_seconds = "x";
+          route.leave_times = "x";
+          route.arrive_times = "x";
+        }
         route.google_index = index;
         route.total_travel_time = total_travel_time;
-        console.log("new goog route", route, "index", index);
         routes.push(route);
 
         areWeDone();
@@ -91,22 +97,20 @@ function transitOrWalkingStep(steps_array, cb) { //json array
 function getRealTimeTransitData(step, callback) {
   if (step.transit.line.agencies[0].name == "San Francisco Municipal Transportation Agency") {
     var line_short = step.transit.line.short_name;
-    if (line_short == "CALIFORNIA") {
-      line_short = "61";
-    } else if (line_short == "Powell-Hyde") {
-      line_short = "60";
-    } else if (line_short == "Powell-Mason") {
-      line_short = "59";
-    }
-    var stopTagQueryURL = nextBusStopTag(line_short);
-    var prediction_seconds = [];
+    if (line_short == "CALIFORNIA" || line_short == "Powell-Hyde" || line_short == "Powell-Mason") {
+      console.log("CABLECARMOTHERFUCKER")
+      callback({ no_prediction: "cablecar" });
+    } else {
+      var stopTagQueryURL = nextBusStopTag(line_short);
+      var prediction_seconds = [];
 
-    $.get(stopTagQueryURL, function(result) {
-      var all_next_bus_line_info = $.xml2json(result);
-      var all_stops_on_line = all_next_bus_line_info.route.stop;
-      var right_stop = getTheRightStop(all_stops_on_line, step)
-      getPredictions(right_stop, step, callback);
-    })//end of nextbus stops get
+      $.get(stopTagQueryURL, function(result) {
+        var all_next_bus_line_info = $.xml2json(result);
+        var all_stops_on_line = all_next_bus_line_info.route.stop;
+        var right_stop = getTheRightStop(all_stops_on_line, step)
+        getPredictions(right_stop, step, callback);
+      })//end of nextbus stops get
+    }
   }//end of check agency if
 }
 
@@ -115,11 +119,10 @@ function getTheRightStop(stops_array, step) {
     if (stopHasMatchingLatLong(stops_array[i], step)) {
       return stops_array[i];
     }//end of lat long match if
-  
   }
-  console.log("no right stops")
   console.log("stops",stops_array)
   console.log("step",step)
+  console.log("no right stops")
 }
 
 function stopHasMatchingLatLong(stop, step) {
@@ -132,6 +135,7 @@ function stopHasMatchingLatLong(stop, step) {
 }
 
 function getPredictions(stop, step, callback) {
+
   var predictionsQueryURL = nextBusPredictions(step.transit.line.short_name, stop.tag);
   $.get(predictionsQueryURL, function(result) {
     var all_prediction_info = $.xml2json(result);
