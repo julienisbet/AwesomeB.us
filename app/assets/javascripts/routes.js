@@ -1,5 +1,5 @@
 $(document).ready(function() {
-
+  getLocation();
   $('a .go').on('click', function(e) {
     e.preventDefault();
     googleRoutes(function (routes) {
@@ -12,11 +12,14 @@ $(document).ready(function() {
 //GET ROUTES FROM GOOGLE
 
 function googleRoutes(cb) {
-  var start_loc = getStartLoc();
+  var start_loc;
+  var geo_loc = $('.geolocation')[0].id;
+  if (geo_loc == 'false') { start_loc = getStartLoc() }
+  else { start_loc = geo_loc }
   var end_loc   = getEndLoc();
   var dep_time  = getDepTime();
   var arr_time  = getArrTime();
-
+  console.log(start_loc);
   var routes = [];
 
   calcRoutes(start_loc, end_loc, function(routes_array) {
