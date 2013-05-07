@@ -24,7 +24,6 @@ function googleRoutes(cb) {
   var end_loc   = getEndLoc();
   var dep_time  = getDepTime();
   var arr_time  = getArrTime();
-  console.log(start_loc);
   var routes = [];
 
   calcRoutes(start_loc, end_loc, function(routes_array) {
@@ -53,9 +52,10 @@ function googleRoutes(cb) {
         route.leave_times = leave_times;
         var arrive_times = calculateTimeToArriveAt(route.leave_times, total_travel_time);
         route.arrive_times = arrive_times;
+        var next_departures = nextDeparturesInMinutes(steps);
+        route.next_departures = next_departures;
         route.google_index = index;
         route.total_travel_time = total_travel_time;
-        console.log("new goog route", route, "index", index);
         routes.push(route);
 
         areWeDone();
@@ -226,13 +226,13 @@ function pushToPage(routes, chosen_index) {
   var google_routes = routes[0];
   var index = routes[1].google_index;
   var seconds = parseInt(routes[1].leave_seconds[0]);
-
   displayTimer(seconds);
   renderRoute(google_routes, index);
   renderDetails(routes[chosen_index]);
 }
 
 function populateDropDown(routes, index) {
+  console.log("popdrop", routes, index)
   $.each(routes, function(i, route) {
     if (i != 0 && i != index) {
       var line = route.steps[1].line_short_name;
