@@ -158,6 +158,7 @@ function getPredictions(stop, step, callback) {
 
 function getSecondsFromPredictionData(predictions_array) {
   var predictions = [];
+  console.log(predictions_array)
   $.each(predictions_array, function(prediction_index, prediction) {
     predictions.push(prediction.seconds);
   })//end of predictions each
