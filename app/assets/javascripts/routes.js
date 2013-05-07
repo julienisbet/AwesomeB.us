@@ -35,7 +35,14 @@ function googleRoutes(cb) {
     $.each(google_routes, function(index, google_route) {
       var google_steps = google_route.legs[0].steps;
       var total_travel_time = google_route.legs[0].duration.value;
-
+      //eliminate walking only routes
+      var route_steps = google_route.legs[0].steps;
+      if (_.indexOf(route_steps, _.findWhere(route_steps, {travel_mode:"TRANSIT"})) == -1) {
+        console.log("walking route skipped at index:",index,route_steps)
+        len --;
+        console.log("new len", len)
+        //do something
+      } else {
       transitOrWalkingStep(google_steps, function(steps) {
         var route = {};
         route.steps = steps;
@@ -58,6 +65,7 @@ function googleRoutes(cb) {
 
         areWeDone();
       });
+    }; //end of else
     })//end of each
   });
 
@@ -135,7 +143,6 @@ function stopHasMatchingLatLong(stop, step) {
 }
 
 function getPredictions(stop, step, callback) {
-
   var predictionsQueryURL = nextBusPredictions(step.transit.line.short_name, stop.tag);
   $.get(predictionsQueryURL, function(result) {
     var all_prediction_info = $.xml2json(result);
@@ -225,7 +232,7 @@ function pushToPage(routes, chosen_index) {
 
   displayTimer(seconds);
   renderRoute(google_routes, index);
-  renderDetails(routes[chosen_index]);
+  renderTransitDetails(routes[chosen_index]);
 }
 
 

@@ -33,8 +33,9 @@ function renderRoute(route_array, index) {
   directionsDisplay.setRouteIndex(index);
 }
 
-function renderDetails(route) {
-  var line = route.steps[1].line_short_name;
+function renderTransitDetails(route) {
+  var first_transit = _.indexOf(route.steps, _.findWhere(route.steps, {travel_mode:"TRANSIT"}))
+  var line = route.steps[first_transit].line_short_name;
   var leaving_at = convertSecondsToRegularTime(route.leave_times[0]);
   var arriving_at = convertSecondsToRegularTime(route.arrive_times[0])
   $("#fetch .route").val(line);
@@ -45,6 +46,6 @@ function renderDetails(route) {
 // function populateDropDown(routes) {
 //   debugger;
 //   $.each(routes, function(rIndex, route) {
-    
+
 //   });
 // }
