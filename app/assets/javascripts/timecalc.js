@@ -16,6 +16,7 @@ function convertSecondsToRegularTime(seconds) {
   var date = new Date(seconds * 1000);
   var UTCHours = date.getUTCHours();
   var hours = ((UTCHours - 7) + 12) % 12;
+  if (hours == 0) { hours = 12; }
   var UTCMinutes = date.getUTCMinutes();
   var UTCSeconds = date.getUTCSeconds();
   var time = (hours + ":" + leadingZeros(UTCMinutes));
