@@ -43,4 +43,15 @@ $(document).ready(function(){
     $(".dropdownlist").slideUp();
   });
 
+  $(".homenav").mousemove(function(e){
+    console.log("wha?")
+    $(".homenav").css({left:e.pageX, top:e.pageY});
+  });
+
+  $("input").keypress(function() {
+    if (event.which == 13) {
+      $("a .go").click();
+    }
+  });
+
 });
