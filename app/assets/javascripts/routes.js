@@ -23,6 +23,7 @@ function googleRoutes(cb) {
     var google_routes = routes_array.routes;
     routes.push(routes_array);
     console.log("OG Googs", google_routes)
+
     var len = google_routes.length;
 
     function areWeDone() {
@@ -212,13 +213,16 @@ function orderRoutes(routes) {
 }
 
 function pushToPage(routes, chosen_index) {
+<<<<<<< HEAD
   console.log("AMAZING", routes);
+=======
+>>>>>>> 3c890b672319e0ddf9e474cc265d4908b2bd129d
   var google_routes = routes[0];
   var index = routes[1].google_index;
   var seconds = parseInt(routes[1].leave_seconds[0]);
 
   displayTimer(seconds);
-  // renderRoute(google_routes, index);
+  renderRoute(google_routes, index);
   renderDetails(routes[chosen_index]);
 }
 
