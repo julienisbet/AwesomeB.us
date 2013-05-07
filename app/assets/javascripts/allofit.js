@@ -1,4 +1,3 @@
-
 function roundNumber(number,decimal_points) {
   if(!decimal_points) return Math.round(number);
   
