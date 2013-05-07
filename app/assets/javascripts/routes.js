@@ -4,6 +4,11 @@ $(document).ready(function() {
     e.preventDefault();
     googleRoutes(function (routes) {
       pushToPage(orderRoutes(routes), 1);
+      populateDropDown(routes, 1);
+      // $('.dropdownlist').on('click', function(e) {
+      //   e.preventDefault();
+      //   alert(routes);
+      // })
     });
   })//end of form submit
 
@@ -214,7 +219,7 @@ function orderRoutes(routes) {
 }
 
 function pushToPage(routes, chosen_index) {
-
+  
   var google_routes = routes[0];
   var index = routes[1].google_index;
   var seconds = parseInt(routes[1].leave_seconds[0]);
@@ -224,4 +229,27 @@ function pushToPage(routes, chosen_index) {
   renderDetails(routes[chosen_index]);
 }
 
+function populateDropDown(routes, index) {
+  $.each(routes, function(i, route) {
+    if (i != 0 && i != index) {
+      var line = route.steps[1].line_short_name;
+      var leaving = convertSecondsToRegularTime(route.leave_times[0]);
+      var arriving = convertSecondsToRegularTime(route.arrive_times[0])
+      $('.dropdownlist').append("<li id='"+i+"'>"+line+" "+leaving+" "+arriving+"</li>")
+        $('.dropdownlist li').on('click', function(event){
+          event.preventDefault();
+          pushToPage(routes, this.id);
+        });
+      // console.log("route index", i)
+      // $.each(route.steps, function(i, step){
+      //   if (step.travel_mode == "TRANSIT") {
+      //     debugger
+      //     var line = step.line_short_name;
+      //     var departure = step.
+      //     // set line and departure in drop down and move on to next route
+      //   }
+      // });
+    }
+  });
 
+}
