@@ -204,15 +204,12 @@ function calculateTimeToArriveAt(leave_times, travel_time) {
 }
 
 function orderRoutes(routes) {
-  console.log("routes", routes)
   var goog_response = routes.splice(0,1);
-  console.log("google thing", goog_response)
   routes.sort(function(a, b) {
     return a.leave_seconds[0] - b.leave_seconds[0];
   })
-  console.log("sorted routes", routes)
   routes.unshift(goog_response[0]);
-  console.log("sorted with google", routes)
+
   return routes
 }
 
