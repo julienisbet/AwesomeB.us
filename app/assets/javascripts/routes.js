@@ -1,20 +1,35 @@
 $(document).ready(function() {
   getLocation();
+
   $('a .go').on('click', function(e) {
     e.preventDefault();
-    googleRoutes(function (routes) {
-      pushToPage(orderRoutes(routes), 1);
-      populateDropDown(routes, 1);
-      // $('.dropdownlist').on('click', function(e) {
-      //   e.preventDefault();
-      //   alert(routes);
-      // })
-    });
+      if (validateForm() === true) {
+      clickedGo();
+      googleRoutes(function (routes) {
+        pushToPage(orderRoutes(routes), 1);
+        populateDropDown(routes, 1);
+        // $('.dropdownlist').on('click', function(e) {
+        //   e.preventDefault();
+        //   a
+      });
+    }
   })//end of form submit
-
 })//end of doc ready
 
 //GET ROUTES FROM GOOGLE
+
+function clickedGo() {
+  $("form").fadeOut(function(){
+    $("#fetch").fadeIn();
+    // $("form #start_loc").val("Fetching Routes...");
+    // $(".current-route").fadeIn("slow");
+    $(".fetch-bar").fadeIn("slow");
+    $(".circle").fadeIn("slow");
+  });
+  $(".center-div").children().toggleClass("hidden");
+  // $(".center-div img").toggleClass('hidden');
+  // $(".center-div#submit").toggleClass('hidden');
+};
 
 function googleRoutes(cb) {
   var start_loc;
