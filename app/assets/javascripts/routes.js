@@ -11,10 +11,6 @@ $(document).ready(function() {
       });
       $('a.home').show();
     }
-
-    googleRoutes(function (routes) {
-      pushToPage(orderRoutes(routes), 1);
-    });
   })//end of form submit
 })//end of doc ready
 
