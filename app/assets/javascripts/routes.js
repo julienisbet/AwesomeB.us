@@ -20,7 +20,6 @@ function clickedGo() {
   $("#fetch").fadeIn();
 };
 
-
 function googleRoutes(cb) {
   var start_loc;
   var geo_loc = $('.geolocation')[0].id;
@@ -78,7 +77,7 @@ function googleRoutes(cb) {
         });
       }; //end of else
     })//end of each
-});
+  });
 }
 
 function transitOrWalkingStep(steps_array, cb) { //json array
