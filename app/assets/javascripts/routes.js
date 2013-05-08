@@ -4,11 +4,6 @@ $(document).ready(function() {
     e.preventDefault();
     googleRoutes(function (routes) {
       pushToPage(orderRoutes(routes), 1);
-      populateDropDown(routes, 1);
-      // $('.dropdownlist').on('click', function(e) {
-      //   e.preventDefault();
-      //   alert(routes);
-      // })
     });
   })//end of form submit
 
@@ -20,48 +15,48 @@ function googleRoutes(cb) {
   var start_loc;
   var geo_loc = $('.geolocation')[0].id;
   if (getStartLoc() == 'Current Location') { start_loc = geo_loc }
-  else { start_loc = getStartLoc() }
-  var end_loc   = getEndLoc();
-  var dep_time  = getDepTime();
-  var arr_time  = getArrTime();
-  var routes = [];
+    else { start_loc = getStartLoc() }
+      var end_loc   = getEndLoc();
+    var dep_time  = getDepTime();
+    var arr_time  = getArrTime();
+    var routes = [];
 
-  calcRoutes(start_loc, end_loc, function(routes_array) {
-    var google_routes = routes_array.routes;
-    routes.push(routes_array);
-    console.log("OG Googs", routes_array)
+    calcRoutes(start_loc, end_loc, function(routes_array) {
+      var google_routes = routes_array.routes;
+      routes.push(routes_array);
+      console.log("OG Googs", routes_array)
 
-    var len = google_routes.length;
+      var len = google_routes.length;
 
-    function areWeDone() {
-      if (routes.length == (len + 1)) {
-        cb(routes);
+      function areWeDone() {
+        if (routes.length == (len + 1)) {
+          cb(routes);
+        }
       }
-    }
 
-    $.each(google_routes, function(index, google_route) {
-      var google_steps = google_route.legs[0].steps;
-      var total_travel_time = google_route.legs[0].duration.value;
+      $.each(google_routes, function(index, google_route) {
+        var google_steps = google_route.legs[0].steps;
+        var total_travel_time = google_route.legs[0].duration.value;
 
-      transitOrWalkingStep(google_steps, function(steps) {
-        var route = {};
-        route.steps = steps;
-        var leave_seconds = calculateSecondsToLeaveIn(steps);
-        route.leave_seconds = leave_seconds;
-        var leave_times = calculateTimeToLeaveAt(steps);
-        route.leave_times = leave_times;
-        var arrive_times = calculateTimeToArriveAt(route.leave_times, total_travel_time);
-        route.arrive_times = arrive_times;
-        var next_departures = nextDeparturesInMinutes(steps);
-        route.next_departures = next_departures;
-        route.google_index = index;
-        route.total_travel_time = total_travel_time;
-        routes.push(route);
+        transitOrWalkingStep(google_steps, function(steps) {
+          var route = {};
+          route.steps = steps;
+          var leave_seconds = calculateSecondsToLeaveIn(steps);
+          route.leave_seconds = leave_seconds;
+          var leave_times = calculateTimeToLeaveAt(steps);
+          route.leave_times = leave_times;
+          var arrive_times = calculateTimeToArriveAt(route.leave_times, total_travel_time);
+          route.arrive_times = arrive_times;
+          var next_departures = nextDeparturesInMinutes(steps);
+          route.next_departures = next_departures;
+          route.google_index = index;
+          route.total_travel_time = total_travel_time;
+          routes.push(route);
 
-        areWeDone();
-      });
+          areWeDone();
+        });
     })//end of each
-  });
+    });
 
 }
 
@@ -123,7 +118,7 @@ function getTheRightStop(stops_array, step) {
     if (stopHasMatchingLatLong(stops_array[i], step)) {
       return stops_array[i];
     }//end of lat long match if
-  
+
   }
   console.log("no right stops")
   console.log("stops",stops_array)
@@ -136,7 +131,7 @@ function stopHasMatchingLatLong(stop, step) {
   var rounded_step_latitude = roundNumber(step.transit.arrival_stop.location.lat(), 5);
   var rounded_step_longitude = roundNumber(step.transit.arrival_stop.location.lng(), 5);
   if (rounded_stop_longitude == rounded_step_longitude && rounded_stop_latitude == rounded_step_latitude) { return true }
-  return false
+    return false
 }
 
 function getPredictions(stop, step, callback) {
@@ -181,7 +176,7 @@ function calculateSecondsToLeaveIn(steps_array) {
 
 function firstStepIsWalking(steps) {
   if (steps[0].travel_mode == "WALKING") { return true }
-  return false
+    return false
 }
 
 function calculateTimeToLeaveAt(steps_array) {
@@ -222,37 +217,43 @@ function orderRoutes(routes) {
 }
 
 function pushToPage(routes, chosen_index) {
-  
+
   var google_routes = routes[0];
-  var index = routes[1].google_index;
-  var seconds = parseInt(routes[1].leave_seconds[0]);
+  var index = routes[chosen_index].google_index;
+  var seconds = parseInt(routes[chosen_index].leave_seconds[0]);
   displayTimer(seconds);
   renderRoute(google_routes, index);
   renderDetails(routes[chosen_index]);
+  populateDropDown(routes, chosen_index);
 }
 
 function populateDropDown(routes, index) {
-  console.log("popdrop", routes, index)
+  $('.dropdownlist li').remove();
+  var chosen_route = routes[index];
+  var google_routes = routes.slice(0, 1);
+  routes = routes.slice(1, routes.length);
+  var chosen_line_name;
+  $.each(chosen_route.steps, function(index, step) {
+    if (step.travel_mode == "TRANSIT") { chosen_line_name = step.line_short_name; return false; }
+  });
+
   $.each(routes, function(i, route) {
-    if (i != 0 && i != index) {
-      var line = route.steps[1].line_short_name;
+    var line_name;
+    $.each(route.steps, function(index, step) {
+      if (step.travel_mode == "TRANSIT") { line_name = step.line_short_name; return false; }
+    });
+
+    if (line_name != chosen_line_name) {
       var leaving = convertSecondsToRegularTime(route.leave_times[0]);
-      var arriving = convertSecondsToRegularTime(route.arrive_times[0])
-      $('.dropdownlist').append("<li id='"+i+"'>"+line+" "+leaving+" "+arriving+"</li>")
-        $('.dropdownlist li').on('click', function(event){
-          event.preventDefault();
-          pushToPage(routes, this.id);
-        });
-      // console.log("route index", i)
-      // $.each(route.steps, function(i, step){
-      //   if (step.travel_mode == "TRANSIT") {
-      //     debugger
-      //     var line = step.line_short_name;
-      //     var departure = step.
-      //     // set line and departure in drop down and move on to next route
-      //   }
-      // });
+      var next_depart = route.next_departures.slice(1,route.next_departures.length);
+      $('.dropdownlist').append("<li id='"+(i+1)+"'>"+line_name+" | "+leaving+" | "+next_depart+"</li>")
     }
   });
 
+  routes.unshift(google_routes[0]);
+  $('.dropdownlist li').on('click', function(event){
+    event.preventDefault();
+    clearInterval(timer)
+    pushToPage(routes, this.id);
+  });
 }
