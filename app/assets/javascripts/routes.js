@@ -3,15 +3,14 @@ $(document).ready(function() {
 
   $('a.go').on('click', function(e) {
     e.preventDefault();
+    $('.error_message').slideUp();
     if (validateForm() === true) {
       saveHistory();
-      clickedGo();
       // calcGranolaRoutes();
       googleRoutes(function (routes) {
         pushToPage(orderRoutes(routes), 1);
         calcGranolaRoutes(function (granola) { console.log("granola!!", granola) });
       });
-      $('a.home').show();
     }
   })//end of form submit
 })//end of doc ready
@@ -20,6 +19,7 @@ $(document).ready(function() {
 function clickedGo() {
   $("form").hide();
   $("#fetch").fadeIn();
+  $('a.home').show();
 };
 
 function googleRoutes(cb) {
