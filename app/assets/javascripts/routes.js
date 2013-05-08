@@ -6,9 +6,22 @@ $(document).ready(function() {
     if (validateForm() === true) {
       saveHistory();
       clickedGo();
+      // calcGranolaRoutes();
       var start_in_seconds = Math.round(new Date()/1000.0);
       googleRoutes(function (routes) {
-        pushToPage(orderRoutes(routes), 1, start_in_seconds);
+        var granolaArray = [];
+        calcGranolaRoutes(function (granola) { 
+          granolaArray.push(granola);
+          if (granolaArray.length == 2) {
+            console.log(granolaArray)
+            $.each(granolaArray, function(i, value){
+              if (value[1].status != "OK") {
+                granolaArray.slice(i, 1);
+              }
+            });
+            pushToPage(orderRoutes(routes), 1, granolaArray, start_in_seconds);
+          }
+        });
       });
       $('a.home').show();
     }
@@ -20,7 +33,6 @@ function clickedGo() {
   $("form").hide();
   $("#fetch").fadeIn();
 };
-
 
 function googleRoutes(cb) {
   var start_loc;
@@ -81,7 +93,7 @@ function googleRoutes(cb) {
         });
       }; //end of else
     })//end of each
-});
+  });
 }
 
 function transitOrWalkingStep(steps_array, cb) { //json array
@@ -239,7 +251,7 @@ function orderRoutes(routes) {
   return routes
 }
 
-function pushToPage(routes, chosen_index, start) {
+function pushToPage(routes, chosen_index, granolaArray, start) {
   console.log("amaze");
   console.log("routes before", routes);
   var time_adjusted_routes = adjustAllTimesOnAllRoutes(routes, start);
@@ -250,10 +262,10 @@ function pushToPage(routes, chosen_index, start) {
   displayTimer(seconds);
   renderRoute(google_routes, index);
   renderTransitDetails(time_adjusted_routes[chosen_index]);
-  populateDropDown(time_adjusted_routes, chosen_index);
+  populateDropDown(time_adjusted_routes, chosen_index, granolaArray);
 }
 
-function populateDropDown(routes, index) {
+function populateDropDown(routes, index, granolaArray) {
   console.log("popdrop",routes)
   $('.dropdownlist > div').remove();
   var chosen_route = routes[index];
@@ -293,9 +305,20 @@ function populateDropDown(routes, index) {
   $('.dropdownlist').append("<div class='bike'><li>BIKE</li><li>2 mins</li></div")
 
   routes.unshift(google_routes[0]);
+
+  $.each(granolaArray, function(i, value){
+    var time = value[3];
+    $('.dropdownlist').append("<div id='"+value[0]+"'><li>"+value[0]+"</li><li>"+time+"</li></div>");
+    console.log(value[2])
+  });
+
   $('.dropdownlist > div').on('click', function(event){
+    if (this.id != "WALKING" && this.id != "BICYCLING"){
     event.preventDefault();
     clearInterval(timer)
     pushToPage(routes, this.className);
+    } else {
+      
+    }
   });
 }
