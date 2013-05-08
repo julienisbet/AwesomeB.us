@@ -273,15 +273,19 @@ function populateDropDown(routes, index) {
     };
 
     $.each(next_depart_array, function(next_depart_index, next_depart) {
-      list.push({ name: line_name, depart_mins: next_depart, route_index: (i+1)});
+      list.push({ bus_name: line_name, depart_mins: next_depart, route_index: (i+1)});
     });
   });
 
   list.sort(function(a,b) { return a.depart_mins - b.depart_mins });
 
   $.each(list, function(index, list_item) {
-    $('.dropdownlist').append("<div class='"+list_item.route_index+"'><li>"+list_item.line_name+"</li><li>"+list_item.depart_mins+" mins</li></div")
-  })
+    if (index > 0) {
+      if ((list_item.bus_name != list[index - 1].bus_name) && (list_item.depart_mins != list[index - 1].depart_mins)) {
+        $('.dropdownlist').append("<div class='"+list_item.route_index+"'><li>"+list_item.bus_name+"</li><li>"+list_item.depart_mins+" mins</li></div")
+      };
+    };
+  });
 
       // var leaving = convertSecondsToRegularTime(route.leave_times[0]);
       // $('.dropdownlist').append("<div class='"+(i+1)+"'><li>"+line_name+"</li><li>"+next_depart+"</li></div>")
