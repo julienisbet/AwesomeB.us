@@ -245,11 +245,13 @@ function populateDropDown(routes, index) {
   var google_routes = routes.slice(0, 1);
   routes = routes.slice(1, routes.length);
   var chosen_line_name;
+
   $.each(chosen_route.steps, function(index, step) {
     if (step.travel_mode == "TRANSIT") { chosen_line_name = step.line_short_name; return false; }
   });
 
   var all_route_names = [chosen_line_name];
+  
   $.each(routes, function(i, route) {
     var name_counter = 0;
     var line_name;
