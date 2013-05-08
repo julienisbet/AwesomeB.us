@@ -1,0 +1,164 @@
+/* */
+
+.route-info {
+  height: 25px;
+  width: 100%;
+  background-color: black;
+  top: 0;
+  margin: 0 0 5px;
+  position: fixed;
+  z-index:1;
+}
+
+.dropdown {
+  background-color: black;
+  position: fixed;
+  border-radius: 4px;
+  height: 45px;
+  width: 50px;
+  margin: 5px;
+
+}
+
+.dropdown ul li {
+  position: relative;
+  display: block;
+  padding: 4px 4px;
+  margin: 1px;
+  font-size: 18px;
+  white-space: nowrap;
+  border-radius: 3px;
+  color:white;
+
+}
+
+.dropdownline {
+  margin: 0 auto;
+  position: absolute;
+  bottom: 0;
+
+}
+
+a {
+  color:white;
+}
+
+.dropdownlist {
+  position: absolute;
+  top: 20px;
+  left: 50px;
+  background: black;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  display: none;
+}
+
+.center-div {
+
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  height:200px;
+  width:200px;
+  margin-top: -6em; /*set to a negative number 1/2 of your height*/
+  margin-left: -5em; /*set to a negative number 1/2 of your width*/
+}
+
+.bottom-div {
+  height: 25%;
+  width: 100%;
+  background-color: black;
+  bottom: 0;
+  margin: 5px 0 0;
+  position: fixed;
+}
+
+.bottom-div .home-nav {
+  height: 100%;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+}
+
+.timer {
+
+}
+
+.current-route {
+  height:100%;
+  background:gray;
+}
+
+.current-route p {
+  font-size: 2em;
+  margin:-0.1em 0 0 0;
+  text-align:center;
+  font-family: 'Roboto', sans-serif;
+}
+
+.this-route {
+  width:32%;
+  height:100%;
+  float:left;
+  margin:0 0 0 1%;
+  background:#bada55;
+}
+
+a .go {
+  width: 75%;
+  margin: 0 auto;
+  position: center;
+}
+
+.spin {
+  width: 75%;
+  margin: 0 auto;
+  position: center;
+}
+
+ul {
+  margin: 0 auto;
+  position: center;
+  padding: 0;
+  list-style-type: none;
+}
+
+ul li {
+  width: 100%;
+  display: inline;
+}
+
+ul li:first-child {
+  padding-left: 5px;
+}
+
+ul #fetch {
+  width: 28%;
+  background-color:yellow;
+}
+
+.hidden {
+  display: none;
+}
+
+body {
+  background-image: url('defaultbackground1.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+html { 
+  height: 100%;
+}
+
+body { 
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#map-canvas { 
+  width: 100%;
+  height: 75%;
+  top: 0;
+}

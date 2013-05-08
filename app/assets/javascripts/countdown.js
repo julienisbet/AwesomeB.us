@@ -45,6 +45,7 @@ function drawTimer(element,color,text,time){
 }
 
 function displayTimer(total_seconds) {
+  $('.timer').show();
   var minutes = Math.floor(total_seconds / 60);
   var seconds = total_seconds - minutes*60;
 
