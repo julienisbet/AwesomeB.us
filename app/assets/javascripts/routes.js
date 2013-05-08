@@ -3,7 +3,8 @@ $(document).ready(function() {
   $('a .go').on('click', function(e) {
     e.preventDefault();
     googleRoutes(function (routes) {
-      pushToPage(orderRoutes(routes), 1);
+      var start = Math.round(new Date().getTime()/1000);
+      pushToPage(orderRoutes(routes), 1, start);
     });
   })//end of form submit
 
@@ -239,18 +240,18 @@ function orderRoutes(routes) {
   return routes
 }
 
-function pushToPage(routes, chosen_index) {
-
+function pushToPage(routes, chosen_index, start) {
+  
   var google_routes = routes[0];
   var index = routes[chosen_index].google_index;
   var seconds = parseInt(routes[chosen_index].leave_seconds[0]);
   displayTimer(seconds);
   renderRoute(google_routes, index);
   renderTransitDetails(routes[chosen_index]);
-  populateDropDown(routes, chosen_index);
+  populateDropDown(routes, chosen_index, start);
 }
 
-function populateDropDown(routes, index) {
+function populateDropDown(routes, index, start) {
   $('.dropdownlist li').remove();
   var chosen_route = routes[index];
   var google_routes = routes.slice(0, 1);
