@@ -25,7 +25,8 @@ function drawTimer(element,color,text,time){
         context.stroke();
         context.closePath();
 
-        var time_text = time.toString();
+        if (time == 60) {var time_text = "0"
+        } else {var time_text = time.toString()};
         context.fillStyle = "white"; // font color to write the text with
         var font = "bold " + (Math.min(canvas.width, canvas.height)*0.25) +"px serif";
         context.font = font;
@@ -44,25 +45,25 @@ function drawTimer(element,color,text,time){
 }
 
 function displayTimer(total_seconds) {
-  var minutes = Math.floor(total_seconds / 60);      
+  var minutes = Math.floor(total_seconds / 60);
   var seconds = total_seconds - minutes*60;
 
   drawTimer('minutesTimer',"green","MINUTES",minutes--)
   drawTimer('secondsTimer',"yellow","SECONDS",seconds)
 
   timer = setInterval(function() { 
+    drawTimer('secondsTimer',"yellow","SECONDS",seconds--)
     if (seconds==-1) {
       if (minutes==-1) {
         clearInterval(timer);
-        alert("GTFO!");
+        drawTimer('minutesTimer',"red","MINUTES",60)
+        drawTimer('secondsTimer',"red","SECONDS",60)
       }
       else {
         seconds=59
         drawTimer('minutesTimer',"green","MINUTES",minutes--)
-
       }
     };
-  drawTimer('secondsTimer',"yellow","SECONDS",seconds--)
   }, 1000)
 }
 

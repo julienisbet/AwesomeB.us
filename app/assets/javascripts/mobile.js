@@ -14,8 +14,7 @@ $(document).ready(function(){
     }
   })
   
-  $("a .go").on("click", function (e) {
-    e.preventDefault();
+  function clickedGo() {
     $("form").fadeOut(function(){
       $("#fetch").fadeIn();
       // $("form #start_loc").val("Fetching Routes...");
@@ -26,7 +25,7 @@ $(document).ready(function(){
     $(".center-div").children().hide();
     // $(".center-div img").toggleClass('hidden');
     // $(".center-div#submit").toggleClass('hidden');
-  });
+  };
 
   $(".home-nav").on("click", function(e) {
     e.preventDefault();

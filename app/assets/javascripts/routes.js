@@ -1,16 +1,37 @@
 $(document).ready(function() {
   getLocation();
+
   $('a .go').on('click', function(e) {
     e.preventDefault();
-    googleRoutes(function (routes) {
-      var start = Math.round(new Date().getTime()/1000);
-      pushToPage(orderRoutes(routes), 1, start);
-    });
-  })//end of form submit
+      if (validateForm() === true) {
+      clickedGo();
+      googleRoutes(function (routes) {
+        var start = Math.round(new Date().getTime()/1000);
+        pushToPage(orderRoutes(routes), 1, start);
 
+        // $('.dropdownlist').on('click', function(e) {
+        //   e.preventDefault();
+        //   a
+      });
+    }
+
+  })//end of form submit
 })//end of doc ready
 
 //GET ROUTES FROM GOOGLE
+
+function clickedGo() {
+  $("form").fadeOut(function(){
+    $("#fetch").fadeIn();
+    // $("form #start_loc").val("Fetching Routes...");
+    // $(".current-route").fadeIn("slow");
+    $(".fetch-bar").fadeIn("slow");
+    $(".circle").fadeIn("slow");
+  });
+  $(".center-div").children().toggleClass("hidden");
+  // $(".center-div img").toggleClass('hidden');
+  // $(".center-div#submit").toggleClass('hidden');
+};
 
 function googleRoutes(cb) {
   var start_loc;
@@ -177,6 +198,7 @@ function getPredictions(stop, step, callback) {
 
 function getSecondsFromPredictionData(predictions_array) {
   var predictions = [];
+  console.log(predictions_array)
   $.each(predictions_array, function(prediction_index, prediction) {
     predictions.push(prediction.seconds);
   })//end of predictions each
