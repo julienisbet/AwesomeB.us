@@ -1,14 +1,18 @@
 $(document).ready(function() {
   getLocation();
-
   $('a .go').on('click', function(e) {
     e.preventDefault();
     if (validateForm() === true) {
+      saveHistory();
       clickedGo();
       googleRoutes(function (routes) {
         pushToPage(orderRoutes(routes), 1);
       });  
     }
+
+    googleRoutes(function (routes) {
+      pushToPage(orderRoutes(routes), 1);
+    });
   })//end of form submit
 })//end of doc ready
 

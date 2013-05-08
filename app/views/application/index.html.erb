@@ -14,7 +14,7 @@
   <ul id="input">
     <form class="user-input">
       <li><input type="text" id="start_location" value="Current Location"></li>
-      <li id="end"><input type="text" id="end_location" placeholder="Destination" value="2300 Webster San Francisco" autofocus="autofocus"></li>
+      <li id="end"><input type="text" id="end_location" placeholder="Destination" value="<%= @history if @history %>" autofocus="autofocus"></li>
     </form>
   </ul>
   <ul id="fetch" class="hidden">
