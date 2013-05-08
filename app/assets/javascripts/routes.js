@@ -241,7 +241,9 @@ function orderRoutes(routes) {
 
 function pushToPage(routes, chosen_index, start) {
   console.log("amaze");
-  
+  console.log("routes before", routes);
+  var time_adjusted_routes = adjustAllTimesOnAllRoutes(routes, start);
+  console.log("routes after", time_adjusted_routes);
   var google_routes = routes[0];
   var index = routes[chosen_index].google_index;
   var seconds = parseInt(routes[chosen_index].leave_seconds[0]);
@@ -286,6 +288,9 @@ function populateDropDown(routes, index) {
       };
     };
   });
+
+  $('.dropdownlist').append("<div class='walk'><li>WALK</li><li>5 mins</li></div")
+  $('.dropdownlist').append("<div class='bike'><li>BIKE</li><li>2 mins</li></div")
 
   routes.unshift(google_routes[0]);
   $('.dropdownlist > div').on('click', function(event){
