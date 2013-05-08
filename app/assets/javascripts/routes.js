@@ -3,35 +3,14 @@ $(document).ready(function() {
 
   $('a .go').on('click', function(e) {
     e.preventDefault();
-      if (validateForm() === true) {
-      clickedGo();
-      googleRoutes(function (routes) {
-        var start = Math.round(new Date().getTime()/1000);
-        pushToPage(orderRoutes(routes), 1, start);
-
-        // $('.dropdownlist').on('click', function(e) {
-        //   e.preventDefault();
-        //   a
-      });
-    }
+    googleRoutes(function (routes) {
+      pushToPage(orderRoutes(routes), 1);
+    });
 
   })//end of form submit
 })//end of doc ready
 
 //GET ROUTES FROM GOOGLE
-
-function clickedGo() {
-  $("form").fadeOut(function(){
-    $("#fetch").fadeIn();
-    // $("form #start_loc").val("Fetching Routes...");
-    // $(".current-route").fadeIn("slow");
-    $(".fetch-bar").fadeIn("slow");
-    $(".circle").fadeIn("slow");
-  });
-  $(".center-div").children().toggleClass("hidden");
-  // $(".center-div img").toggleClass('hidden');
-  // $(".center-div#submit").toggleClass('hidden');
-};
 
 function googleRoutes(cb) {
   var start_loc;
@@ -39,22 +18,22 @@ function googleRoutes(cb) {
   if (getStartLoc() == 'Current Location') { start_loc = geo_loc }
     else { start_loc = getStartLoc() }
       var end_loc   = getEndLoc();
-    var dep_time  = getDepTime();
-    var arr_time  = getArrTime();
-    var routes = [];
+  var dep_time  = getDepTime();
+  var arr_time  = getArrTime();
+  var routes = [];
 
-    calcRoutes(start_loc, end_loc, function(routes_array) {
-      var google_routes = routes_array.routes;
-      routes.push(routes_array);
-      console.log("OG Googs", routes_array)
+  calcRoutes(start_loc, end_loc, function(routes_array) {
+    var google_routes = routes_array.routes;
+    routes.push(routes_array);
+    console.log("OG Googs", routes_array)
 
-      var len = google_routes.length;
+    var len = google_routes.length;
 
-      function areWeDone() {
-        if (routes.length == (len + 1)) {
-          cb(routes);
-        }
+    function areWeDone() {
+      if (routes.length == (len + 1)) {
+        cb(routes);
       }
+    }
 
     $.each(google_routes, function(index, google_route) {
       var google_steps = google_route.legs[0].steps;
@@ -62,45 +41,35 @@ function googleRoutes(cb) {
       //eliminate walking only routes
       var route_steps = google_route.legs[0].steps;
       if (_.indexOf(route_steps, _.findWhere(route_steps, {travel_mode:"TRANSIT"})) == -1) {
-        console.log("walking route skipped at index:",index,route_steps)
         len --;
-        console.log("new len", len)
         //do something
       } else {
-      transitOrWalkingStep(google_steps, function(steps) {
-        var route = {};
-        route.steps = steps;
-        console.log(steps);
-        if (noPredictionErrors(steps)) {
-          var leave_seconds = calculateSecondsToLeaveIn(steps);
-          route.leave_seconds = leave_seconds;
-          var leave_times = calculateTimeToLeaveAt(steps);
-          route.leave_times = leave_times;
-          var arrive_times = calculateTimeToArriveAt(route.leave_times, total_travel_time);
-          route.arrive_times = arrive_times;
-          var next_departures = nextDeparturesInMinutes(steps);
-          route.next_departures = next_departures;
+        transitOrWalkingStep(google_steps, function(steps) {
+          var route = {};
+          route.steps = steps;
+          if (noPredictionErrors(steps)) {
+            var leave_seconds = calculateSecondsToLeaveIn(steps);
+            route.leave_seconds = leave_seconds;
+            var leave_times = calculateTimeToLeaveAt(steps);
+            route.leave_times = leave_times;
+            var arrive_times = calculateTimeToArriveAt(route.leave_times, total_travel_time);
+            route.arrive_times = arrive_times;
+            var next_departures = nextDeparturesInMinutes(steps);
+            route.next_departures = next_departures;
+          } else {
+            route.leave_seconds = "x";
+            route.leave_times = "x";
+            route.arrive_times = "x";
+          }//end of no prediction errors if else
           route.google_index = index;
           route.total_travel_time = total_travel_time;
           routes.push(route);
 
           areWeDone();
         });
-        } else {
-          route.leave_seconds = "x";
-          route.leave_times = "x";
-          route.arrive_times = "x";
-        }
-        route.google_index = index;
-        route.total_travel_time = total_travel_time;
-        routes.push(route);
-
-        areWeDone();
-      });
-    }; //end of else
+      }; //end of else
     })//end of each
-    });
-
+  });
 }
 
 function transitOrWalkingStep(steps_array, cb) { //json array
@@ -138,7 +107,6 @@ function getRealTimeTransitData(step, callback) {
   if (step.transit.line.agencies[0].name == "San Francisco Municipal Transportation Agency") {
     var line_short = step.transit.line.short_name;
     if (line_short == "CALIFORNIA" || line_short == "Powell-Hyde" || line_short == "Powell-Mason") {
-      console.log("CABLECARMOTHERFUCKER")
       callback({ no_prediction: "cablecar" });
     } else {
       var stopTagQueryURL = nextBusStopTag(line_short);
@@ -158,8 +126,6 @@ function getTheRightStop(stops_array, step) {
   for (dec=5; dec>2; dec--) {
     for(var i = 0; i < stops_array.length; i++) {
       if (stopHasMatchingLatLong(stops_array[i], step, dec)) {
-        console.log("matching stop", stops_array[i])
-        console.log("step", step)
         return stops_array[i];
       }//end of lat long match if
     }
@@ -198,7 +164,6 @@ function getPredictions(stop, step, callback) {
 
 function getSecondsFromPredictionData(predictions_array) {
   var predictions = [];
-  console.log(predictions_array)
   $.each(predictions_array, function(prediction_index, prediction) {
     predictions.push(prediction.seconds);
   })//end of predictions each
@@ -262,19 +227,20 @@ function orderRoutes(routes) {
   return routes
 }
 
-function pushToPage(routes, chosen_index, start) {
-  
+function pushToPage(routes, chosen_index) {
+  console.log("amaze")
   var google_routes = routes[0];
   var index = routes[chosen_index].google_index;
   var seconds = parseInt(routes[chosen_index].leave_seconds[0]);
   displayTimer(seconds);
   renderRoute(google_routes, index);
   renderTransitDetails(routes[chosen_index]);
-  populateDropDown(routes, chosen_index, start);
+  populateDropDown(routes, chosen_index);
 }
 
-function populateDropDown(routes, index, start) {
-  $('.dropdownlist li').remove();
+function populateDropDown(routes, index) {
+  console.log("popdrop",routes)
+  $('.dropdownlist > li').remove();
   var chosen_route = routes[index];
   var google_routes = routes.slice(0, 1);
   routes = routes.slice(1, routes.length);
@@ -283,13 +249,19 @@ function populateDropDown(routes, index, start) {
     if (step.travel_mode == "TRANSIT") { chosen_line_name = step.line_short_name; return false; }
   });
 
+  var all_route_names = [chosen_line_name];
   $.each(routes, function(i, route) {
+    var name_counter = 0;
     var line_name;
     $.each(route.steps, function(index, step) {
       if (step.travel_mode == "TRANSIT") { line_name = step.line_short_name; return false; }
     });
+    console.log("line name", line_name, "index", i)
+    $.each(all_route_names, function(index, route_name) {
+      if (route_name == line_name) { name_counter++; }
+    })
 
-    if (line_name != chosen_line_name) {
+    if (line_name != chosen_line_name && name_counter == 0) {
       var leaving = convertSecondsToRegularTime(route.leave_times[0]);
       var next_depart = route.next_departures.slice(1,route.next_departures.length);
       $('.dropdownlist').append("<li id='"+(i+1)+"'>"+line_name+" | "+leaving+" | "+next_depart+"</li>")
@@ -297,7 +269,7 @@ function populateDropDown(routes, index, start) {
   });
 
   routes.unshift(google_routes[0]);
-  $('.dropdownlist li').on('click', function(event){
+  $('.dropdownlist > li').on('click', function(event){
     event.preventDefault();
     clearInterval(timer)
     pushToPage(routes, this.id);

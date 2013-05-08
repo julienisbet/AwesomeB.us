@@ -14,18 +14,6 @@ $(document).ready(function(){
     }
   })
   
-  function clickedGo() {
-    $("form").fadeOut(function(){
-      $("#fetch").fadeIn();
-      // $("form #start_loc").val("Fetching Routes...");
-      // $(".current-route").fadeIn("slow");
-      $(".fetch-bar").fadeIn("slow");
-      $(".circle").fadeIn("slow");
-    });
-    $(".center-div").children().hide();
-    // $(".center-div img").toggleClass('hidden');
-    // $(".center-div#submit").toggleClass('hidden');
-  };
 
   $(".home-nav").on("click", function(e) {
     e.preventDefault();
@@ -53,13 +41,13 @@ $(document).ready(function(){
     }
   });
 
-  $("a .go").mouseenter(function() {
-    $("#gounclick").addClass("hidden");
-    $("#goclick").removeClass("hidden");
-  }).mouseleave(function() {
-    $("#goclick").addClass("hidden");
-    $("#gounclick").removeClass("hidden");
-  });
+  // $("a .go").mouseenter(function() {
+  //   $("#gounclick").addClass("hidden");
+  //   $("#goclick").removeClass("hidden");
+  // }).mouseleave(function() {
+  //   $("#goclick").addClass("hidden");
+  //   $("#gounclick").removeClass("hidden");
+  // });
   // .mouseleave(function() {
   //   $(this).toggleClass("hidden");
   // });
