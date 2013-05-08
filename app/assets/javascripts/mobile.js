@@ -13,7 +13,7 @@ $(document).ready(function(){
   })
   
 
-  $(".home-nav").on("click", function(e) {
+  $(".home").on("click", function(e) {
     e.preventDefault();
     location.reload();
   });
