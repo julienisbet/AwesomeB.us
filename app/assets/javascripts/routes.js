@@ -6,8 +6,9 @@ $(document).ready(function() {
     if (validateForm() === true) {
       saveHistory();
       clickedGo();
+      var start_in_seconds = Math.round(new Date()/1000.0);
       googleRoutes(function (routes) {
-        pushToPage(orderRoutes(routes), 1);
+        pushToPage(orderRoutes(routes), 1, start_in_seconds);
       });
       $('a.home').show();
     }
@@ -238,8 +239,9 @@ function orderRoutes(routes) {
   return routes
 }
 
-function pushToPage(routes, chosen_index) {
-  console.log("amaze")
+function pushToPage(routes, chosen_index, start) {
+  console.log("amaze");
+  
   var google_routes = routes[0];
   var index = routes[chosen_index].google_index;
   var seconds = parseInt(routes[chosen_index].leave_seconds[0]);
