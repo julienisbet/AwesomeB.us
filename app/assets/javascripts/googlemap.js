@@ -22,6 +22,7 @@ function initializeMap() {
   directionsDisplay = new google.maps.DirectionsRenderer();
   var mapOptions = {
     mapTypeId: google.maps.MapTypeId.ROADMAP,
+    zoomControl: false
   }
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
   directionsDisplay.setMap(map);
