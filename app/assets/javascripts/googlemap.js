@@ -15,7 +15,7 @@ function calcRoutes(start, end, responseHandler) {
     if (status == google.maps.DirectionsStatus.OK) {
       responseHandler(response);
     } else {
-      alert("Google effed up!");
+      alert("Google effed up! Google...");
       location.reload();
     }
   });
@@ -31,9 +31,8 @@ function calcRouteWalk(start, end, responseHandler) {
   directionsService.route(request, function(response, status) {
 
     if (status == google.maps.DirectionsStatus.OK) {
-      var walkRoute = response;
-      var duration = bikeOrWalkDuration(response);
-      responseHandler(walkRoute);
+      console.log("walk api:", response);
+      responseHandler(response);
     } else {
       return 0 // if (return value == false) { throw this shit out }
     }
@@ -48,19 +47,39 @@ function calcRouteBike(start, end, responseHandler) {
     unitSystem: google.maps.UnitSystem.IMPERIAL,
   };
   directionsService.route(request, function(response, status) {
-
     if (status == google.maps.DirectionsStatus.OK) {
-      var bikeRoute = response;
-      var duration = bikeOrWalkDuration(response);
-      responseHandler(bikeRoute, duration);
+      console.log("bike api:", response);
+      responseHandler(response);
     } else {
       return 0 // if (return value == false) { throw this shit out }
     }
   });
 };
 
-function bikeOrWalkDuration(response) {
-  return response.routes[0].legs[0].duration.value;
+function bikeOrWalkDuration(googsRouteObj) {
+  return googsRouteObj.routes[0].legs[0].duration.value;
+}
+
+function calcGranolaRoutes(responseHandler) {
+  var start_loc;
+  var geo_loc = $('.geolocation')[0].id;
+  if (getStartLoc() == 'Current Location') { start_loc = geo_loc }
+    else { start_loc = getStartLoc() }
+  var end_loc   = getEndLoc();
+  var dep_time  = getDepTime();
+  var arr_time  = getArrTime();
+  calcRouteWalk(start_loc, end_loc, function(walkRoute){
+    console.log("calcGranolaW:", walkRoute)
+    var walkDuration = bikeOrWalkDuration(walkRoute);
+    var walk = ["WALKING", walkRoute, walkDuration];
+    responseHandler(walk);
+  });
+  calcRouteBike(start_loc, end_loc, function(bikeRoute){
+    console.log("calcGranolaB:", bikeRoute)
+    var bikeDuration = bikeOrWalkDuration(bikeRoute);
+    var bike = ["BICYCLING", bikeRoute, bikeDuration];
+    responseHandler(bike);
+  });
 }
 
 function initializeMap() {
