@@ -38,10 +38,10 @@ function renderTransitDetails(route) {
   var first_transit = _.indexOf(route.steps, _.findWhere(route.steps, {travel_mode:"TRANSIT"}))
   var line = route.steps[first_transit].line_short_name;
   var leaving_at = convertSecondsToRegularTime(route.leave_times[0]);
-  var arriving_at = convertSecondsToRegularTime(route.arrive_times[0])
+  var next_depart = route.next_departures.slice(1,route.next_departures.length);
   $("#fetch .route").val(line);
   $("#fetch .leave").val(leaving_at);
-  $("#fetch .arrive").val(arriving_at);
+  $("#fetch .arrive").val(next_depart);
 };
 
 // function populateDropDown(routes) {

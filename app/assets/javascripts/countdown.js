@@ -51,7 +51,7 @@ function displayTimer(total_seconds) {
   drawTimer('minutesTimer',"green","MINUTES",minutes--)
   drawTimer('secondsTimer',"yellow","SECONDS",seconds)
 
-  var timer = setInterval(function() {
+  timer = setInterval(function() { 
     drawTimer('secondsTimer',"yellow","SECONDS",seconds--)
     if (seconds==-1) {
       if (minutes==-1) {
