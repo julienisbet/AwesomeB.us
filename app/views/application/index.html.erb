@@ -8,37 +8,34 @@
     <input type="submit">
   </form>
 </ul> -->
-
-<div class="route-info">
+<div class="route-info hidden" id="fetch">
   <div class="geolocation" id="false"></div>
-  <ul id="input">
-    <form class="user-input">
-      <li><input type="text" id="start_location" value="Current Location"></li>
-      <li id="end"><input type="text" id="end_location" placeholder="Destination" value="<%= @history if @history %>" autofocus="autofocus"></li>
-    </form>
-  </ul>
-  <ul id="fetch" class="hidden">
-    <li><input type="text" readonly="readonly" id="fetch" class="route" value="Route..."></li>
-    <li><input type="text" readonly="readonly" id="fetch" class="leave" value="Leave At..."></li>
-    <li><input type="text" readonly="readonly" id="fetch" class="arrive" value="Arrive At..."></li>
+  <ul>
+    <li class="route">Route...</li>
+    <li class="leave">Leave At...</li>
+    <li style="min-width: 5%; cursor: pointer;">+</li>
   </ul>
   <div class="current-route hidden">
     <div class="this-route" id="route-name"><p>L</p></div>
     <div class="this-route" id="leave-at"><p>8:17</p></div>
     <%#<div class="this-route" id="arrive-at"><p>9:00</p></div>%>
   </div>
+  <ul class="dropdownlist hidden"></ul>
 </div>
-<div class="dropdown">
-  <div class="dropdownline"><%= image_tag "pulldownlines1.png" %></div>
-  <ul class="dropdownlist hidden">
-  </ul>
-</div>
-<div class="center-div">
-  <a class="go" id="gounclick"><%= image_tag "go.jpeg", class: "go" %></a>
-</div>
+<div id="map-canvas"></div>
+<div class="outerwrapper">
 
-<div class="bottom-div">
-  <canvas id="minutesTimer"></canvas>
-  <canvas id="secondsTimer"></canvas>
-  <a href="/"><%= image_tag "home2.png", class: "home-nav" %></a>
+  <div class="footer">
+    <a class="home nav-button hidden">X</a>
+    <form class="location-form">
+      <a class="go nav-button" id="gounclick">go</a>
+      <input type="text" id="start_location" value="Current Location">
+      <input type="text" id="end_location" placeholder="Destination" value="2300 Webster San Francisco" autofocus="autofocus">
+      <span style="clear: both;"></span>
+    </form>
+    <canvas id="minutesTimer" class="timer"></canvas>
+    <canvas id="secondsTimer" class="timer"></canvas>
+    <a href="/" style="display: none;"><%= image_tag "home2.png", class: "home-nav" %></a>
+  </div>
+
 </div>

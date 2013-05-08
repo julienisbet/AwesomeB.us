@@ -1,13 +1,15 @@
 $(document).ready(function() {
   getLocation();
-  $('a .go').on('click', function(e) {
+
+  $('a.go').on('click', function(e) {
     e.preventDefault();
     if (validateForm() === true) {
       saveHistory();
       clickedGo();
       googleRoutes(function (routes) {
         pushToPage(orderRoutes(routes), 1);
-      });  
+      });
+      $('a.home').show();
     }
 
     googleRoutes(function (routes) {
@@ -18,16 +20,8 @@ $(document).ready(function() {
 
 //GET ROUTES FROM GOOGLE
 function clickedGo() {
-  $("form").fadeOut(function(){
-    $("#fetch").fadeIn();
-    // $("form #start_loc").val("Fetching Routes...");
-    // $(".current-route").fadeIn("slow");
-    $(".fetch-bar").fadeIn("slow");
-    $(".circle").fadeIn("slow");
-  });
-  $(".center-div").children().toggleClass("hidden");
-  // $(".center-div img").toggleClass('hidden');
-  // $(".center-div#submit").toggleClass('hidden');
+  $("form").hide();
+  $("#fetch").fadeIn();
 };
 
 
@@ -36,7 +30,7 @@ function googleRoutes(cb) {
   var geo_loc = $('.geolocation')[0].id;
   if (getStartLoc() == 'Current Location') { start_loc = geo_loc }
     else { start_loc = getStartLoc() }
-      var end_loc   = getEndLoc();
+    var end_loc   = getEndLoc();
     var dep_time  = getDepTime();
     var arr_time  = getArrTime();
     var routes = [];
@@ -259,7 +253,7 @@ function pushToPage(routes, chosen_index) {
 
 function populateDropDown(routes, index) {
   console.log("popdrop",routes)
-  $('.dropdownlist > li').remove();
+  $('.dropdownlist > div').remove();
   var chosen_route = routes[index];
   var google_routes = routes.slice(0, 1);
   routes = routes.slice(1, routes.length);
@@ -285,12 +279,12 @@ function populateDropDown(routes, index) {
     if (line_name != chosen_line_name && name_counter == 0) {
       var leaving = convertSecondsToRegularTime(route.leave_times[0]);
       var next_depart = route.next_departures.slice(1,route.next_departures.length);
-      $('.dropdownlist').append("<li id='"+(i+1)+"'>"+line_name+" | "+leaving+" | "+next_depart+"</li>")
+      $('.dropdownlist').append("<div id='"+(i+1)+"'><li>"+line_name+"</li><li>"+next_depart+"</li></div>")
     }
   });
 
   routes.unshift(google_routes[0]);
-  $('.dropdownlist > li').on('click', function(event){
+  $('.dropdownlist > div').on('click', function(event){
     event.preventDefault();
     clearInterval(timer)
     pushToPage(routes, this.id);

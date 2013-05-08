@@ -20,7 +20,7 @@ $(document).ready(function(){
 
   // setTimeout(function() {populateRouteInfo()},6000);
 
-  $(".dropdown").on("click", function(){
+  $("#fetch").on("click", function(){
     if ($(".dropdownlist:hidden").length) {
       $(".dropdownlist").show();
     } else {
@@ -35,7 +35,7 @@ $(document).ready(function(){
 
   $("input").keypress(function() {
     if (event.which == 13) {
-      $("a .go").click();
+      $("a.go").click();
     }
   });
 

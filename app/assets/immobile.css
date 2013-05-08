@@ -1,0 +1,28 @@
+html { 
+  height: 100% 
+}
+
+body { 
+  height: 100%; 
+  margin: 0; 
+  padding: 0 
+}
+
+#map-canvas { 
+  height: 100%;
+}
+
+.outerwrapper {
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+}
+
+.innerwrapper { 
+  position:relative;
+  left:100px;
+  width: 650px;
+}
+
+ #map-canvas img{max-width:none}
