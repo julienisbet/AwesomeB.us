@@ -49,22 +49,22 @@ function displayTimer(total_seconds) {
   var minutes = Math.floor(total_seconds / 60);
   var seconds = total_seconds - minutes*60;
 
-  drawTimer('minutesTimer',"green","MINUTES",minutes--)
-  drawTimer('secondsTimer',"yellow","SECONDS",seconds)
 
   timer = setInterval(function() { 
-    drawTimer('secondsTimer',"yellow","SECONDS",seconds--)
-    if (seconds==-1) {
-      if (minutes==-1) {
+    drawTimer('minutesTimer',"green","MINUTES",minutes)
+    drawTimer('secondsTimer',"yellow","SECONDS",seconds)
+    if (seconds==0) {
+      if (minutes==0) {
         clearInterval(timer);
         drawTimer('minutesTimer',"red","MINUTES",60)
         drawTimer('secondsTimer',"red","SECONDS",60)
       }
       else {
-        seconds=59
-        drawTimer('minutesTimer',"green","MINUTES",minutes--)
+        seconds=59;
+        minutes--;
       }
     };
+    seconds--;
   }, 1000)
 }
 
