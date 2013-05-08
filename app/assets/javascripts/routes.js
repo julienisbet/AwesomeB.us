@@ -6,8 +6,10 @@ $(document).ready(function() {
     if (validateForm() === true) {
       saveHistory();
       clickedGo();
+      // calcGranolaRoutes();
       googleRoutes(function (routes) {
         pushToPage(orderRoutes(routes), 1);
+        calcGranolaRoutes(function (granola) { console.log("granola!!", granola) });
       });
       $('a.home').show();
     }
