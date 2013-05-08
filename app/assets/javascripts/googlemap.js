@@ -14,9 +14,54 @@ function calcRoutes(start, end, responseHandler) {
 
     if (status == google.maps.DirectionsStatus.OK) {
       responseHandler(response);
+    } else {
+      alert("Google effed up!");
+      location.reload();
     }
   });
 };
+
+function calcRouteWalk(start, end, responseHandler) {
+  var request = {
+    origin:start,
+    destination:end,
+    travelMode: google.maps.DirectionsTravelMode.WALKING,
+    unitSystem: google.maps.UnitSystem.IMPERIAL,
+  };
+  directionsService.route(request, function(response, status) {
+
+    if (status == google.maps.DirectionsStatus.OK) {
+      var walkRoute = response;
+      var duration = bikeOrWalkDuration(response);
+      responseHandler(walkRoute);
+    } else {
+      return 0 // if (return value == false) { throw this shit out }
+    }
+  });
+};
+
+function calcRouteBike(start, end, responseHandler) {
+  var request = {
+    origin:start,
+    destination:end,
+    travelMode: google.maps.DirectionsTravelMode.BICYCLING,
+    unitSystem: google.maps.UnitSystem.IMPERIAL,
+  };
+  directionsService.route(request, function(response, status) {
+
+    if (status == google.maps.DirectionsStatus.OK) {
+      var bikeRoute = response;
+      var duration = bikeOrWalkDuration(response);
+      responseHandler(bikeRoute, duration);
+    } else {
+      return 0 // if (return value == false) { throw this shit out }
+    }
+  });
+};
+
+function bikeOrWalkDuration(response) {
+  return response.routes[0].legs[0].duration.value;
+}
 
 function initializeMap() {
   directionsDisplay = new google.maps.DirectionsRenderer();
@@ -42,10 +87,3 @@ function renderTransitDetails(route) {
   $("#fetch .route").html(line);
   $("#fetch .leave").html(leaving_at);
 };
-
-// function populateDropDown(routes) {
-//   debugger;
-//   $.each(routes, function(rIndex, route) {
-
-//   });
-// }
