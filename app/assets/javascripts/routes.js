@@ -244,13 +244,13 @@ function pushToPage(routes, chosen_index, start) {
   console.log("routes before", routes);
   var time_adjusted_routes = adjustAllTimesOnAllRoutes(routes, start);
   console.log("routes after", time_adjusted_routes);
-  var google_routes = routes[0];
-  var index = routes[chosen_index].google_index;
-  var seconds = parseInt(routes[chosen_index].leave_seconds[0]);
+  var google_routes = time_adjusted_routes[0];
+  var index = time_adjusted_routes[chosen_index].google_index;
+  var seconds = parseInt(time_adjusted_routes[chosen_index].leave_seconds[0]);
   displayTimer(seconds);
   renderRoute(google_routes, index);
-  renderTransitDetails(routes[chosen_index]);
-  populateDropDown(routes, chosen_index);
+  renderTransitDetails(time_adjusted_routes[chosen_index]);
+  populateDropDown(time_adjusted_routes, chosen_index);
 }
 
 function populateDropDown(routes, index) {

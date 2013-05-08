@@ -22,5 +22,12 @@ function removeSecondsThatHavePassed(seconds_array, start) {
 }
 
 function removeBusesThatHaveLeft(bus_arrival_array, start) {
-  
+  var now = Math.round(new Date()/1000.0);
+  var keep_these = [];
+  $.each(bus_arrival_array, function(index, value) {
+    if (value > now) {
+      keep_these.push(value);
+    };
+  });
+  return keep_these;
 }
