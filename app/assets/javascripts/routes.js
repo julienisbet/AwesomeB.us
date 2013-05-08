@@ -65,6 +65,8 @@ function googleRoutes(cb) {
             route.arrive_times = arrive_times;
             var next_departures = nextDeparturesInMinutes(steps);
             route.next_departures = next_departures;
+            var bus_arrival_times = calculateBusArrival(steps);
+            route.bus_arrival = bus_arrival_times;
           } else {
             route.leave_seconds = "x";
             route.leave_times = "x";
@@ -261,16 +263,12 @@ function populateDropDown(routes, index) {
   
   var list = [];
   $.each(routes, function(i, route) {
-    var line_name, next_depart_array;
+    var line_name;
     $.each(route.steps, function(index, step) {
       if (step.travel_mode == "TRANSIT") { line_name = step.line_short_name; return false; }
     });
 
-    if (line_name == chosen_line_name) {
-      next_depart_array = route.next_departures.slice(1,route.next_departures.length);
-    } else {
-      next_depart_array = route.next_departures;
-    };
+    var next_depart_array = route.next_departures;
 
     $.each(next_depart_array, function(next_depart_index, next_depart) {
       list.push({ bus_name: line_name, depart_mins: next_depart, route_index: (i+1)});
@@ -286,9 +284,6 @@ function populateDropDown(routes, index) {
       };
     };
   });
-
-      // var leaving = convertSecondsToRegularTime(route.leave_times[0]);
-      // $('.dropdownlist').append("<div class='"+(i+1)+"'><li>"+line_name+"</li><li>"+next_depart+"</li></div>")
 
   routes.unshift(google_routes[0]);
   $('.dropdownlist > div').on('click', function(event){

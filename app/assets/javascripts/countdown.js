@@ -17,6 +17,20 @@ function drawTimer(element,color,text,time){
         context.setTransform(1, 0, 0, 1, 0, 0);
         context.clearRect(0, 0, canvas.width, canvas.height);
         context.restore();
+
+        context.beginPath();
+        context.strokeStyle=color;
+        context.lineWidth=(Math.min(canvas.width, canvas.height)*0.01);
+        context.arc(x, y, (radius + ((Math.min(canvas.width, canvas.height)*0.05) / 2)), 0, 2 * Math.PI, false);
+        context.stroke();
+        context.closePath();
+
+        context.beginPath();
+        context.strokeStyle=color;
+        context.lineWidth=(Math.min(canvas.width, canvas.height)*0.01);
+        context.arc(x, y, (radius - ((Math.min(canvas.width, canvas.height)*0.05) / 2)), 0, 2 * Math.PI, false);
+        context.stroke();
+        context.closePath();
         
         context.beginPath();
         context.strokeStyle=color;
@@ -51,13 +65,13 @@ function displayTimer(total_seconds) {
 
 
   timer = setInterval(function() { 
-    drawTimer('minutesTimer',"green","MINUTES",minutes)
-    drawTimer('secondsTimer',"yellow","SECONDS",seconds)
+    drawTimer('minutesTimer',"#34495E","MINUTES",minutes)
+    drawTimer('secondsTimer',"#F1C40F","SECONDS",seconds)
     if (seconds==0) {
       if (minutes==0) {
         clearInterval(timer);
-        drawTimer('minutesTimer',"red","MINUTES",60)
-        drawTimer('secondsTimer',"red","SECONDS",60)
+        drawTimer('minutesTimer',"#E74C3C","MINUTES",60)
+        drawTimer('secondsTimer',"#E74C3C","SECONDS",60)
       }
       else {
         seconds=59;
