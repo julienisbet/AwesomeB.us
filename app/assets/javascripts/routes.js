@@ -58,23 +58,37 @@ function googleRoutes(cb) {
     $.each(google_routes, function(index, google_route) {
       var google_steps = google_route.legs[0].steps;
       var total_travel_time = google_route.legs[0].duration.value;
-
+      //eliminate walking only routes
+      var route_steps = google_route.legs[0].steps;
+      if (_.indexOf(route_steps, _.findWhere(route_steps, {travel_mode:"TRANSIT"})) == -1) {
+        console.log("walking route skipped at index:",index,route_steps)
+        len --;
+        console.log("new len", len)
+        //do something
+      } else {
       transitOrWalkingStep(google_steps, function(steps) {
         var route = {};
         route.steps = steps;
-        var leave_seconds = calculateSecondsToLeaveIn(steps);
-        route.leave_seconds = leave_seconds;
-        var leave_times = calculateTimeToLeaveAt(steps);
-        route.leave_times = leave_times;
-        var arrive_times = calculateTimeToArriveAt(route.leave_times, total_travel_time);
-        route.arrive_times = arrive_times;
+        console.log(steps);
+        if (noPredictionErrors(steps)) {
+          var leave_seconds = calculateSecondsToLeaveIn(steps);
+          route.leave_seconds = leave_seconds;
+          var leave_times = calculateTimeToLeaveAt(steps);
+          route.leave_times = leave_times;
+          var arrive_times = calculateTimeToArriveAt(route.leave_times, total_travel_time);
+          route.arrive_times = arrive_times;
+        } else {
+          route.leave_seconds = "x";
+          route.leave_times = "x";
+          route.arrive_times = "x";
+        }
         route.google_index = index;
         route.total_travel_time = total_travel_time;
-        console.log("new goog route", route, "index", index);
         routes.push(route);
 
         areWeDone();
       });
+    }; //end of else
     })//end of each
   });
 
@@ -114,52 +128,55 @@ function transitOrWalkingStep(steps_array, cb) { //json array
 function getRealTimeTransitData(step, callback) {
   if (step.transit.line.agencies[0].name == "San Francisco Municipal Transportation Agency") {
     var line_short = step.transit.line.short_name;
-    if (line_short == "CALIFORNIA") {
-      line_short = "61";
-    } else if (line_short == "Powell-Hyde") {
-      line_short = "60";
-    } else if (line_short == "Powell-Mason") {
-      line_short = "59";
-    }
-    var stopTagQueryURL = nextBusStopTag(line_short);
-    var prediction_seconds = [];
+    if (line_short == "CALIFORNIA" || line_short == "Powell-Hyde" || line_short == "Powell-Mason") {
+      console.log("CABLECARMOTHERFUCKER")
+      callback({ no_prediction: "cablecar" });
+    } else {
+      var stopTagQueryURL = nextBusStopTag(line_short);
+      var prediction_seconds = [];
 
-    $.get(stopTagQueryURL, function(result) {
-      var all_next_bus_line_info = $.xml2json(result);
-      var all_stops_on_line = all_next_bus_line_info.route.stop;
-      var right_stop = getTheRightStop(all_stops_on_line, step)
-      getPredictions(right_stop, step, callback);
-    })//end of nextbus stops get
+      $.get(stopTagQueryURL, function(result) {
+        var all_next_bus_line_info = $.xml2json(result);
+        var all_stops_on_line = all_next_bus_line_info.route.stop;
+        var right_stop = getTheRightStop(all_stops_on_line, step)
+        getPredictions(right_stop, step, callback);
+      })//end of nextbus stops get
+    }
   }//end of check agency if
 }
 
 function getTheRightStop(stops_array, step) {
-  for(var i = 0; i < stops_array.length; i++) {
-    if (stopHasMatchingLatLong(stops_array[i], step)) {
-      return stops_array[i];
-    }//end of lat long match if
-  
+  for (dec=5; dec>2; dec--) {
+    for(var i = 0; i < stops_array.length; i++) {
+      if (stopHasMatchingLatLong(stops_array[i], step, dec)) {
+        console.log("matching stop", stops_array[i])
+        console.log("step", step)
+        return stops_array[i];
+      }//end of lat long match if
+    }
+    console.log("no match at",dec, "trying",dec-1)
+
   }
-  console.log("no right stops")
   console.log("stops",stops_array)
   console.log("step",step)
+  console.log("no right stops")
 }
 
-function stopHasMatchingLatLong(stop, step) {
-  var rounded_stop_latitude = roundNumber(stop.lat, 5);
-  var rounded_stop_longitude = roundNumber(stop.lon, 5);
-  var rounded_step_latitude = roundNumber(step.transit.arrival_stop.location.lat(), 5);
-  var rounded_step_longitude = roundNumber(step.transit.arrival_stop.location.lng(), 5);
+function stopHasMatchingLatLong(stop, step, decimal) {
+  var rounded_stop_latitude = roundNumber(stop.lat, decimal);
+  var rounded_stop_longitude = roundNumber(stop.lon, decimal);
+  var rounded_step_latitude = roundNumber(step.transit.departure_stop.location.lat(), decimal);
+  var rounded_step_longitude = roundNumber(step.transit.departure_stop.location.lng(), decimal);
   if (rounded_stop_longitude == rounded_step_longitude && rounded_stop_latitude == rounded_step_latitude) { return true }
   return false
 }
 
 function getPredictions(stop, step, callback) {
+
   var predictionsQueryURL = nextBusPredictions(step.transit.line.short_name, stop.tag);
   $.get(predictionsQueryURL, function(result) {
     var all_prediction_info = $.xml2json(result);
     var direction = all_prediction_info.predictions.direction;
-
     if (direction.length > 0) {
       var prediction_data = direction[0].prediction;
     } else {
@@ -238,14 +255,13 @@ function orderRoutes(routes) {
 }
 
 function pushToPage(routes, chosen_index) {
-  
-  var google_routes = routes[0];
-  var index = routes[1].google_index;
-  var seconds = parseInt(routes[1].leave_seconds[0]);
 
+  var google_routes = routes[0];
+  var index = routes[chosen_index].google_index;
+  var seconds = parseInt(routes[chosen_index].leave_seconds[0]);
   displayTimer(seconds);
   renderRoute(google_routes, index);
-  renderDetails(routes[chosen_index]);
+  renderTransitDetails(routes[chosen_index]);
 }
 
 function populateDropDown(routes, index) {

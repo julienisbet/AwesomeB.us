@@ -22,7 +22,7 @@ $(document).ready(function(){
       $(".fetch-bar").fadeIn("slow");
       $(".circle").fadeIn("slow");
     });
-    $(".center-div").children().toggleClass("hidden");
+    $(".center-div").children().hide();
     // $(".center-div img").toggleClass('hidden');
     // $(".center-div#submit").toggleClass('hidden');
   };
@@ -35,11 +35,11 @@ $(document).ready(function(){
   // setTimeout(function() {populateRouteInfo()},6000);
 
   $(".dropdown").on("click", function(){
-    $(".dropdownlist").slideDown();
-  });
-
-  $(document).on("click", ".dropdownlist", function(){
-    $(".dropdownlist").slideUp();
+    if ($(".dropdownlist:hidden").length) {
+      $(".dropdownlist").show();
+    } else {
+      $(".dropdownlist").hide();
+    }
   });
 
   $(".homenav").mousemove(function(e){
@@ -52,5 +52,16 @@ $(document).ready(function(){
       $("a .go").click();
     }
   });
+
+  $("a .go").mouseenter(function() {
+    $("#gounclick").addClass("hidden");
+    $("#goclick").removeClass("hidden");
+  }).mouseleave(function() {
+    $("#goclick").addClass("hidden");
+    $("#gounclick").removeClass("hidden");
+  });
+  // .mouseleave(function() {
+  //   $(this).toggleClass("hidden");
+  // });
 
 });
