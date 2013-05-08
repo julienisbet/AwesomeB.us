@@ -4,7 +4,8 @@ function adjustAllTimesOnAllRoutes(routes, start) {
   console.log("before", routes);
   $.each(transit_routes, function(index, route) {
     route.leave_seconds = removeSecondsThatHavePassed(route.leave_seconds, start);
-    route.bus_arrival = removeBusesThatHaveLeft(route.bus_arrival, start)
+    route.bus_arrival = removeBusesThatHaveLeft(route.bus_arrival, start);
+    route.next_departures = removeNextBusDepartures(route.next_departures, start)
   });
   console.log("after", routes);
   return routes;
@@ -27,6 +28,17 @@ function removeBusesThatHaveLeft(bus_arrival_array, start) {
   $.each(bus_arrival_array, function(index, value) {
     if (value > now) {
       keep_these.push(value);
+    };
+  });
+  return keep_these;
+}
+
+function removeNextBusDepartures(next_departures_array, start) {
+  var now = Math.round(new Date()/1000.0);
+  var keep_these = [];
+  $.each(next_departures_array, function(index, bus_leaves_in_minutes) {
+    if ((now - start) < (bus_leaves_in_minutes*60)) {
+      keep_these.push(bus_leaves_in_minutes);
     };
   });
   return keep_these;
