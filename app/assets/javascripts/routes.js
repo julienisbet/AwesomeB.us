@@ -258,31 +258,38 @@ function populateDropDown(routes, index) {
   $.each(chosen_route.steps, function(index, step) {
     if (step.travel_mode == "TRANSIT") { chosen_line_name = step.line_short_name; return false; }
   });
-
-  var all_route_names = [chosen_line_name];
   
+  var list = [];
   $.each(routes, function(i, route) {
-    var name_counter = 0;
-    var line_name;
+    var line_name, next_depart_array;
     $.each(route.steps, function(index, step) {
       if (step.travel_mode == "TRANSIT") { line_name = step.line_short_name; return false; }
     });
-    console.log("line name", line_name, "index", i)
-    $.each(all_route_names, function(index, route_name) {
-      if (route_name == line_name) { name_counter++; }
-    })
 
-    if (line_name != chosen_line_name && name_counter == 0) {
-      var leaving = convertSecondsToRegularTime(route.leave_times[0]);
-      var next_depart = route.next_departures.slice(1,route.next_departures.length);
-      $('.dropdownlist').append("<div id='"+(i+1)+"'><li>"+line_name+"</li><li>"+next_depart+"</li></div>")
-    }
+    if (line_name == chosen_line_name) {
+      next_depart_array = route.next_departures.slice(1,route.next_departures.length);
+    } else {
+      next_depart_array = route.next_departures;
+    };
+
+    $.each(next_depart_array, function(next_depart_index, next_depart) {
+      list.push({ name: line_name, depart_mins: next_depart, route_index: (i+1)});
+    });
   });
+
+  list.sort(function(a,b) { return a.depart_mins - b.depart_mins });
+
+  $.each(list, function(index, list_item) {
+    $('.dropdownlist').append("<div class='"+list_item.route_index+"'><li>"+list_item.line_name+"</li><li>"+list_item.depart_mins+" mins</li></div")
+  })
+
+      // var leaving = convertSecondsToRegularTime(route.leave_times[0]);
+      // $('.dropdownlist').append("<div class='"+(i+1)+"'><li>"+line_name+"</li><li>"+next_depart+"</li></div>")
 
   routes.unshift(google_routes[0]);
   $('.dropdownlist > div').on('click', function(event){
     event.preventDefault();
     clearInterval(timer)
-    pushToPage(routes, this.id);
+    pushToPage(routes, this.className);
   });
 }
