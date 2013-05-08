@@ -3,14 +3,29 @@ $(document).ready(function() {
 
   $('a .go').on('click', function(e) {
     e.preventDefault();
-    googleRoutes(function (routes) {
-      pushToPage(orderRoutes(routes), 1);
-    });
-
+    if (validateForm() === true) {
+      clickedGo();
+      googleRoutes(function (routes) {
+        pushToPage(orderRoutes(routes), 1);
+      });  
+    }
   })//end of form submit
 })//end of doc ready
 
 //GET ROUTES FROM GOOGLE
+function clickedGo() {
+  $("form").fadeOut(function(){
+    $("#fetch").fadeIn();
+    // $("form #start_loc").val("Fetching Routes...");
+    // $(".current-route").fadeIn("slow");
+    $(".fetch-bar").fadeIn("slow");
+    $(".circle").fadeIn("slow");
+  });
+  $(".center-div").children().toggleClass("hidden");
+  // $(".center-div img").toggleClass('hidden');
+  // $(".center-div#submit").toggleClass('hidden');
+};
+
 
 function googleRoutes(cb) {
   var start_loc;
@@ -18,26 +33,26 @@ function googleRoutes(cb) {
   if (getStartLoc() == 'Current Location') { start_loc = geo_loc }
     else { start_loc = getStartLoc() }
       var end_loc   = getEndLoc();
-  var dep_time  = getDepTime();
-  var arr_time  = getArrTime();
-  var routes = [];
+    var dep_time  = getDepTime();
+    var arr_time  = getArrTime();
+    var routes = [];
 
-  calcRoutes(start_loc, end_loc, function(routes_array) {
-    var google_routes = routes_array.routes;
-    routes.push(routes_array);
-    console.log("OG Googs", routes_array)
+    calcRoutes(start_loc, end_loc, function(routes_array) {
+      var google_routes = routes_array.routes;
+      routes.push(routes_array);
+      console.log("OG Googs", routes_array)
 
-    var len = google_routes.length;
+      var len = google_routes.length;
 
-    function areWeDone() {
-      if (routes.length == (len + 1)) {
-        cb(routes);
+      function areWeDone() {
+        if (routes.length == (len + 1)) {
+          cb(routes);
+        }
       }
-    }
 
-    $.each(google_routes, function(index, google_route) {
-      var google_steps = google_route.legs[0].steps;
-      var total_travel_time = google_route.legs[0].duration.value;
+      $.each(google_routes, function(index, google_route) {
+        var google_steps = google_route.legs[0].steps;
+        var total_travel_time = google_route.legs[0].duration.value;
       //eliminate walking only routes
       var route_steps = google_route.legs[0].steps;
       if (_.indexOf(route_steps, _.findWhere(route_steps, {travel_mode:"TRANSIT"})) == -1) {
@@ -69,7 +84,7 @@ function googleRoutes(cb) {
         });
       }; //end of else
     })//end of each
-  });
+});
 }
 
 function transitOrWalkingStep(steps_array, cb) { //json array
