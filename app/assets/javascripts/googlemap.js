@@ -57,7 +57,12 @@ function calcRouteBike(start, end, responseHandler) {
 };
 
 function bikeOrWalkDuration(googsRouteObj) {
-  return googsRouteObj.routes[0].legs[0].duration.value;
+  var times = []
+  var seconds = googsRouteObj.routes[0].legs[0].duration.value;
+  var readable = googsRouteObj.routes[0].legs[0].duration.text;
+  times.push(seconds);
+  times.push(readable);
+  return times;
 }
 
 function calcGranolaRoutes(responseHandler) {
@@ -70,14 +75,16 @@ function calcGranolaRoutes(responseHandler) {
   var arr_time  = getArrTime();
   calcRouteWalk(start_loc, end_loc, function(walkRoute){
     console.log("calcGranolaW:", walkRoute)
-    var walkDuration = bikeOrWalkDuration(walkRoute);
-    var walk = ["WALKING", walkRoute, walkDuration];
+    var walkDurationSeconds = bikeOrWalkDuration(walkRoute)[0];
+    var walkDurationReadable = bikeOrWalkDuration(walkRoute)[1];
+    var walk = ["WALKING", walkRoute, walkDurationSeconds, walkDurationReadable];
     responseHandler(walk);
   });
   calcRouteBike(start_loc, end_loc, function(bikeRoute){
     console.log("calcGranolaB:", bikeRoute)
-    var bikeDuration = bikeOrWalkDuration(bikeRoute);
-    var bike = ["BICYCLING", bikeRoute, bikeDuration];
+    var bikeDurationSeconds = bikeOrWalkDuration(bikeRoute)[0];
+    var bikeDurationReadable = bikeOrWalkDuration(bikeRoute)[1]
+    var bike = ["BICYCLING", bikeRoute, bikeDurationSeconds, bikeDurationReadable];
     responseHandler(bike);
   });
 }
@@ -96,6 +103,20 @@ function renderRoute(route_array, index) {
   initializeMap();
   directionsDisplay.setDirections(route_array);
   directionsDisplay.setRouteIndex(index);
+}
+
+function renderGranola(routes, index) {
+  var route = routes[index][1];
+  var duration = route[3];
+  initializeMap();
+  directionsDisplay.setDirections(route);
+  if (route[0] == "WALKING") { 
+    // "walking.jpeg"
+  } else {
+    // "bike.jpeg"
+  }
+  $("#fetch .route").html(route[0]);
+  $("#fetch .leave").html(route[2]);
 }
 
 function renderTransitDetails(route) {

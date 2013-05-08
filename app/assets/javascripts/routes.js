@@ -8,8 +8,19 @@ $(document).ready(function() {
       clickedGo();
       // calcGranolaRoutes();
       googleRoutes(function (routes) {
-        pushToPage(orderRoutes(routes), 1);
-        calcGranolaRoutes(function (granola) { console.log("granola!!", granola) });
+        var granolaArray = [];
+        calcGranolaRoutes(function (granola) { 
+          granolaArray.push(granola);
+          if (granolaArray.length == 2) {
+            console.log(granolaArray)
+            $.each(granolaArray, function(i, value){
+              if (value[1].status != "OK") {
+                granolaArray.slice(i, 1);
+              }
+            });
+            pushToPage(orderRoutes(routes), 1, granolaArray);
+          }
+        });
       });
       $('a.home').show();
     }
@@ -237,7 +248,7 @@ function orderRoutes(routes) {
   return routes
 }
 
-function pushToPage(routes, chosen_index) {
+function pushToPage(routes, chosen_index, granolaArray) {
   console.log("amaze")
   var google_routes = routes[0];
   var index = routes[chosen_index].google_index;
@@ -245,10 +256,10 @@ function pushToPage(routes, chosen_index) {
   displayTimer(seconds);
   renderRoute(google_routes, index);
   renderTransitDetails(routes[chosen_index]);
-  populateDropDown(routes, chosen_index);
+  populateDropDown(routes, chosen_index, granolaArray);
 }
 
-function populateDropDown(routes, index) {
+function populateDropDown(routes, index, granolaArray) {
   console.log("popdrop",routes)
   $('.dropdownlist > div').remove();
   var chosen_route = routes[index];
@@ -281,9 +292,20 @@ function populateDropDown(routes, index) {
   });
 
   routes.unshift(google_routes[0]);
+
+  $.each(granolaArray, function(i, value){
+    var time = value[3];
+    $('.dropdownlist').append("<div id='"+value[0]+"'><li>"+value[0]+"</li><li>"+time+"</li></div>");
+    console.log(value[2])
+  });
+
   $('.dropdownlist > div').on('click', function(event){
+    if (this.id != "WALKING" && this.id != "BICYCLING"){
     event.preventDefault();
-    clearInterval(timer)
+    clearInterval(timer);
     pushToPage(routes, this.id);
+    } else {
+      
+    }
   });
 }
