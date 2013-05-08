@@ -28,18 +28,17 @@
   </div>
 </div>
 <div class="dropdown">
-  <div class="dropdownline"></div>
-  <ul class="dropdownlist">
-
+  <div class="dropdownline"><%= image_tag "pulldownlines1.png" %></div>
+  <ul class="dropdownlist hidden">
   </ul>
 </div>
 <div class="center-div">
-  <a class="go"><%= image_tag "go.jpeg", class: "go" %></a>
-  
+  <a class="go" id="gounclick"><%= image_tag "go.jpeg", class: "go" %></a>
+  <a class="go hidden" id="goclick"><%= image_tag "goclick1.png", class: "go" %></a>
 </div>
 
 <div class="bottom-div">
   <canvas id="minutesTimer"></canvas>
   <canvas id="secondsTimer"></canvas>
-  <a href="/"><%= image_tag "home.jpeg", class: "home-nav" %></a>
+  <a href="/"><%= image_tag "home2.png", class: "home-nav" %></a>
 </div>
