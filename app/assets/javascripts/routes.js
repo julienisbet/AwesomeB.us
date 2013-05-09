@@ -34,73 +34,54 @@ function clickedGo() {
   $('a.home').show();
 };
 
-
+function createStepObjects(google_steps) {
+  
+}
 
 function googleRoutes(cb) {
   var start_loc = findStartLocation();
-  // var start_loc;
-  // var geo_loc = $('.geolocation')[0].id;
-  // if (getStartLoc() == 'Current Location') { start_loc = geo_loc }
-  //   else { start_loc = getStartLoc() }
   var end_loc   = getEndLoc();
-    // var dep_time  = getDepTime();
-    // var arr_time  = getArrTime();
   var routes = [];
-
 
   calcRoutes(start_loc, end_loc, function(routes_array) {
     var google_routes = routes_array.routes;
     routes.push(routes_array);
     console.log("OG Googs", routes_array)
 
-    var originalLength = google_routes.length;//
+    var muniRoutes = removeRoutesWithoutTransitSteps(google_routes);
+    var muniLength = muniRoutes.length;//
 
-    // function areWeDone() {
-    //   if (routes.length == (len + 1)) {
-    //     cb(routes);
-    //   }
-    // }
-
-    $.each(google_routes, function(index, google_route) {
-      var google_steps = google_route.legs[0].steps;
+    $.each(muniRoutes, function(index, google_route) {
       var total_travel_time = google_route.legs[0].duration.value;
-    //eliminate walking only routes
-      var route_steps = google_route.legs[0].steps;
-      console.log("route", route_steps, "isBARTRoute", isBARTRoute(route_steps))
-      if (isWalkingRoute(route_steps)) {
-        len --;
-      } else if (isBARTRoute(route_steps)) {
-        len--
-      }
-      else {
-        transitOrWalkingStep(google_steps, function(steps) {
-          var route = {};
-          route.steps = steps;
-          if (noPredictionErrors(steps)) {
-            var leave_seconds = calculateSecondsToLeaveIn(steps);
-            route.leave_seconds = leave_seconds;
-            var leave_times = calculateTimeToLeaveAt(steps);
-            route.leave_times = leave_times;
-            var arrive_times = calculateTimeToArriveAt(route.leave_times, total_travel_time);
-            route.arrive_times = arrive_times;
-            var next_departures = nextDeparturesInMinutes(steps);
-            route.next_departures = next_departures;
-            var bus_arrival_times = calculateBusArrival(steps);
-            route.bus_arrival = bus_arrival_times;
-          } else {
-            route.leave_seconds = "x";
-            route.leave_times = "x";
-            route.arrive_times = "x";
-          }//end of no prediction errors if else
-          route.google_index = index;
-          route.total_travel_time = total_travel_time;
-          routes.push(route);
+      var google_steps = google_route.legs[0].steps;
 
-          if (compareArrayLengths(routes.length, (originalLength + 1))) {
-            cb(routes);
-          }
-        });
-      }; //end of else
+      transitOrWalkingStep(google_steps, function(steps) {
+        var route = {};
+        route.steps = steps;
+        if (noPredictionErrors(steps)) {
+          var leave_seconds = calculateSecondsToLeaveIn(steps);
+          route.leave_seconds = leave_seconds;
+          var leave_times = calculateTimeToLeaveAt(steps);
+          route.leave_times = leave_times;
+          // var arrive_times = calculateTimeToArriveAt(route.leave_times, total_travel_time);
+          // route.arrive_times = arrive_times;
+          var next_departures = nextDeparturesInMinutes(steps);
+          route.next_departures = next_departures;
+          // var bus_arrival_times = calculateBusArrival(steps);
+          // route.bus_arrival = bus_arrival_times;
+        } else {
+          route.leave_seconds = "x";
+          route.leave_times = "x";
+          route.arrive_times = "x";
+        }//end of no prediction errors if else
+        route.google_index = index;
+        route.total_travel_time = total_travel_time;
+        routes.push(route);
+
+        if (compareArrayLengths(routes.length, (muniLength + 1))) {
+          cb(routes);
+        }
+      });
     })//end of each
   });
 }
@@ -122,6 +103,16 @@ function compareArrayLengths(lengthOfOneArray, lengthOfOtherArray) {
   } else {
     return false;
   }
+}
+
+function removeRoutesWithoutTransitSteps(routes) {
+  var onlyMuniRoutes = [];
+
+  $.each(routes, function(index, route) {
+    var steps = route.legs[0].steps;
+    if (!isWalkingRoute(steps) && !isBARTRoute(steps)) { onlyMuniRoutes.push(route); }
+  });
+  return onlyMuniRoutes;
 }
 
 function transitOrWalkingStep(steps_array, cb) { //json array
