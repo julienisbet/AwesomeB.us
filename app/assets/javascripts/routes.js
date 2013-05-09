@@ -250,7 +250,8 @@ function orderRoutes(routes) {
   return routes
 }
 
-function pushToPage(routes, chosenRouteIndex, chosenTimeIndex, granolaArray, start) {
+function pushToPage(routes, chosenRouteIndex, chosenTimeIndex, granolaArray, start, id) {
+  if (id != "WALKING" && id != "BICYCLING"){
 
   var updatedRoutes = updatePredictions(routes, start);
   var myRoute = updatedRoutes[chosenRouteIndex];
@@ -266,6 +267,15 @@ function pushToPage(routes, chosenRouteIndex, chosenTimeIndex, granolaArray, sta
   displayTimer(seconds);
 
   populateDropDown(updatedRoutes, chosenRouteIndex, chosenTimeIndex, granolaArray, start);
+  } else {
+    console.log("GRANOLA!!")
+    $.each(granolaArray, function(i,v){
+      if (v[0] == id) {
+        var index = i
+        renderGranola(granolaArray, index);
+      }
+    });
+  }
 }
 
 function populateDropDown(routes, index, chosenTimeIndex, granolaArray, start) {
@@ -312,12 +322,8 @@ function populateDropDown(routes, index, chosenTimeIndex, granolaArray, start) {
   });
 
   $('.dropdownlist > div').on('click', function(event){
-    if (this.id != "WALKING" && this.id != "BICYCLING"){
     event.preventDefault();
-    clearInterval(timer)
-    pushToPage(routes, this.className, this.id, granolaArray, start);
-    } else {
-      renderGranolaRoute(granolaArray, this.className);
-    }
+    clearInterval(timer);
+    pushToPage(routes, this.className, granolaArray, start, this.id);
   });
 }

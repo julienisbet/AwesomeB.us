@@ -59,12 +59,10 @@ function calcRouteBike(start, end, responseHandler) {
 };
 
 function bikeOrWalkDuration(googsRouteObj) {
-  var times = []
-  var seconds = googsRouteObj.routes[0].legs[0].duration.value;
+  var time = []
   var readable = googsRouteObj.routes[0].legs[0].duration.text;
-  times.push(seconds);
-  times.push(readable);
-  return times;
+  time.push(readable);
+  return time;
 }
 
 function calcGranolaRoutes(responseHandler) {
@@ -76,15 +74,13 @@ function calcGranolaRoutes(responseHandler) {
   var dep_time  = getDepTime();
   var arr_time  = getArrTime();
   calcRouteWalk(start_loc, end_loc, function(walkRoute){
-    var walkDurationSeconds = bikeOrWalkDuration(walkRoute)[0];
-    var walkDurationReadable = bikeOrWalkDuration(walkRoute)[1];
-    var walk = ["WALKING", walkRoute, walkDurationSeconds, walkDurationReadable];
+    var walkDuration = bikeOrWalkDuration(walkRoute)[0];
+    var walk = ["WALKING", walkRoute, walkDuration];
     responseHandler(walk);
   });
   calcRouteBike(start_loc, end_loc, function(bikeRoute){
-    var bikeDurationSeconds = bikeOrWalkDuration(bikeRoute)[0];
-    var bikeDurationReadable = bikeOrWalkDuration(bikeRoute)[1]
-    var bike = ["BICYCLING", bikeRoute, bikeDurationSeconds, bikeDurationReadable];
+    var bikeDuration = bikeOrWalkDuration(bikeRoute)[0];
+    var bike = ["BICYCLING", bikeRoute, bikeDuration];
     responseHandler(bike);
   });
 }
@@ -107,7 +103,8 @@ function renderRoute(route_array, index) {
 
 function renderGranola(routes, type) {
   var route = routes[index][1];
-  var duration = route[3];
+  var duration = routes[index][2];
+  debugger
   initializeMap();
   directionsDisplay.setDirections(route);
   if (route[0] == "WALKING") { 
