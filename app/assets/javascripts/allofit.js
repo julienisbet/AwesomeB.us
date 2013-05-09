@@ -94,3 +94,20 @@ function nextBusPredictions(line_short_name, stop_tag_name) {
 //   this.leave_at_times = [];
 // }
 
+function addError(error){
+  $('.error_message').html(error);
+  $('.error_message').slideDown();
+}
+
+function isWalkingRoute(route_steps) {
+  return _.indexOf(route_steps, _.findWhere(route_steps, {travel_mode:"TRANSIT"})) == -1
+};
+
+function isBARTRoute(route_steps){
+  return _.some(_.map(_.where(route_steps, {travel_mode:"TRANSIT"}),function(route){return route.transit.line.agencies[0].name == "Bay Area Rapid Transit"}))
+}
+
+function isCableCarRoute(){
+
+}
+

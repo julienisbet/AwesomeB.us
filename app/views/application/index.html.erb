@@ -31,9 +31,10 @@
     <form class="location-form">
       <a class="go nav-button" id="gounclick">go</a>
       <input type="text" id="start_location" value="Current Location">
-      <input type="text" id="end_location" placeholder="Destination" value="<%= @destination if not @destination == "test" %>" autofocus="autofocus">
+      <input type="text" id="end_location" placeholder="Destination" value="<%= @destinations[0] if not @destinations[0] == "test" %>" autofocus="autofocus">
       <span style="clear: both;"></span>
     </form>
+    <div class="mode"></div>
     <canvas id="minutesTimer" class="timer"></canvas>
     <canvas id="secondsTimer" class="timer"></canvas>
     <a href="/" style="display: none;"><%= image_tag "home2.png", class: "home-nav" %></a>
