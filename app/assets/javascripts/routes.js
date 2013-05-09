@@ -3,9 +3,9 @@ $(document).ready(function() {
 
   $('a.go').on('click', function(e) {
     e.preventDefault();
+    $('.error_message').slideUp();
     if (validateForm() === true) {
       saveHistory();
-      clickedGo();
       // calcGranolaRoutes();
       var start_in_seconds = Math.round(new Date()/1000.0);
       googleRoutes(function (routes) {
@@ -22,7 +22,6 @@ $(document).ready(function() {
           }
         });
       });
-      $('a.home').show();
     }
   })//end of form submit
 })//end of doc ready
@@ -31,6 +30,7 @@ $(document).ready(function() {
 function clickedGo() {
   $("form").hide();
   $("#fetch").fadeIn();
+  $('a.home').show();
 };
 
 function googleRoutes(cb) {

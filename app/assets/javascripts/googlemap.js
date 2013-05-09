@@ -13,10 +13,14 @@ function calcRoutes(start, end, responseHandler) {
   directionsService.route(request, function(response, status) {
 
     if (status == google.maps.DirectionsStatus.OK) {
+      clickedGo();
       responseHandler(response);
     } else {
-      alert("Google effed up! Google...");
-      location.reload();
+      switch(status) {
+        case "NOT_FOUND": addError("Cannot find location"); break;
+        case "ZERO_RESULTS": addError("No transit directions found"); break;
+        default: addError("We're sorry, something went wrong, please try again!");
+      }
     }
   });
 };

@@ -93,3 +93,8 @@ function Departure(name) {
   this.leave_in_seconds = [];
   this.leave_at_times = [];
 }
+
+function addError(error){
+  $('.error_message').html(error);
+  $('.error_message').slideDown();
+}
