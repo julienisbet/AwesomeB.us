@@ -1,5 +1,6 @@
 $(document).ready(function() {
-  getLocation();
+  enableAutocomplete();
+  getLocation(); //see geoloc.js
 
   $('a.go').on('click', function(e) {
     e.preventDefault();
@@ -33,33 +34,37 @@ function clickedGo() {
   $('a.home').show();
 };
 
+
+
 function googleRoutes(cb) {
-  var start_loc;
-  var geo_loc = $('.geolocation')[0].id;
-  if (getStartLoc() == 'Current Location') { start_loc = geo_loc }
-    else { start_loc = getStartLoc() }
-    var end_loc   = getEndLoc();
-    var dep_time  = getDepTime();
-    var arr_time  = getArrTime();
-    var routes = [];
+  var start_loc = findStartLocation();
+  // var start_loc;
+  // var geo_loc = $('.geolocation')[0].id;
+  // if (getStartLoc() == 'Current Location') { start_loc = geo_loc }
+  //   else { start_loc = getStartLoc() }
+  var end_loc   = getEndLoc();
+    // var dep_time  = getDepTime();
+    // var arr_time  = getArrTime();
+  var routes = [];
 
-    calcRoutes(start_loc, end_loc, function(routes_array) {
-      var google_routes = routes_array.routes;
-      routes.push(routes_array);
-      console.log("OG Googs", routes_array)
 
-      var len = google_routes.length;
+  calcRoutes(start_loc, end_loc, function(routes_array) {
+    var google_routes = routes_array.routes;
+    routes.push(routes_array);
+    console.log("OG Googs", routes_array)
 
-      function areWeDone() {
-        if (routes.length == (len + 1)) {
-          cb(routes);
-        }
-      }
+    var originalLength = google_routes.length;//
 
-      $.each(google_routes, function(index, google_route) {
-        var google_steps = google_route.legs[0].steps;
-        var total_travel_time = google_route.legs[0].duration.value;
-      //eliminate walking only routes
+    // function areWeDone() {
+    //   if (routes.length == (len + 1)) {
+    //     cb(routes);
+    //   }
+    // }
+
+    $.each(google_routes, function(index, google_route) {
+      var google_steps = google_route.legs[0].steps;
+      var total_travel_time = google_route.legs[0].duration.value;
+    //eliminate walking only routes
       var route_steps = google_route.legs[0].steps;
       if (_.indexOf(route_steps, _.findWhere(route_steps, {travel_mode:"TRANSIT"})) == -1) {
         len --;
@@ -88,11 +93,32 @@ function googleRoutes(cb) {
           route.total_travel_time = total_travel_time;
           routes.push(route);
 
-          areWeDone();
+          if (compareArrayLengths(routes.length, (originalLength + 1))) {
+            cb(routes);
+          }
         });
       }; //end of else
     })//end of each
   });
+}
+
+function findStartLocation() {
+  var start_loc;
+  var geo_loc = $('.geolocation')[0].id;
+  if (getStartLoc() == 'Current Location') {
+    start_loc = geo_loc;
+  } else { 
+    start_loc = getStartLoc();
+  }
+  return start_loc;
+}
+
+function compareArrayLengths(lengthOfOneArray, lengthOfOtherArray) {
+  if (lengthOfOneArray == lengthOfOtherArray) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 function transitOrWalkingStep(steps_array, cb) { //json array
