@@ -25,6 +25,21 @@ function nextDeparturesInMinutes(steps_array) {
   return minutes;
 }
 
+function calculateBusArrival(steps_array) {
+  var nowInEpochSeconds = Math.round(new Date()/1000.0);
+  var bus_arrival = [];
+  $.each(steps_array, function(i, step) {
+    if (step.travel_mode == "TRANSIT") {
+      var seconds = step.transit_seconds;
+      $.each(seconds, function(i, sec) {
+        bus_arrival.push(nowInEpochSeconds + parseInt(sec));
+      });
+      return false;
+    };
+  });
+  return bus_arrival;
+};
+
 function convertSecondsToRegularTime(seconds) {
   var date = new Date(seconds * 1000);
   var UTCHours = date.getUTCHours();
