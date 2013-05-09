@@ -119,10 +119,9 @@ function renderGranola(routes, type) {
   $("#fetch .leave").html(route[2]);
 }
 
-function renderTransitDetails(route) {
+function renderTransitDetails(route, busLeavesAt) {
   var first_transit = _.indexOf(route.steps, _.findWhere(route.steps, {travel_mode:"TRANSIT"}))
   var line = route.steps[first_transit].line_short_name;
-  var leaving_at = convertSecondsToRegularTime(route.bus_arrival[0]);
   $("#fetch .route").html(line);
-  $("#fetch .leave").html(leaving_at);
+  $("#fetch .leave").html(busLeavesAt);
 };
