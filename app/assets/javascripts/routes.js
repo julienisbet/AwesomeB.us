@@ -250,22 +250,38 @@ function orderRoutes(routes) {
   return routes
 }
 
-function pushToPage(routes, chosenRouteIndex, chosenTimeIndex, granolaArray, start) {
+function pushToPage(routes, chosenRouteIndex, chosenTimeIndex, granolaArray, start, className) {
+  if (className != "WALKING" && className != "BICYCLING"){
+    // console.log("routes", routes)
+    // console.log("chosenRouteIndex", chosenRouteIndex)
+    // console.log("chosenTimeIndex", chosenTimeIndex)
+    // console.log("granolaArray", granolaArray)
+    // console.log("start", start)
 
-  var updatedRoutes = updatePredictions(routes, start);
-  var myRoute = updatedRoutes[chosenRouteIndex];
-  var busLeavesAt = findWhatTimeMyBusLeaves(myRoute, chosenTimeIndex);
-  renderTransitDetails(myRoute, busLeavesAt);
-  
+    var updatedRoutes = updatePredictions(routes, start);
+    var myRoute = updatedRoutes[chosenRouteIndex];
+    var busLeavesAt = findWhatTimeMyBusLeaves(myRoute, chosenTimeIndex);
+    renderTransitDetails(myRoute, busLeavesAt);
+    
 
-  var google_routes = updatedRoutes[0];
-  var route_index = updatedRoutes[chosenRouteIndex].google_index;
-  renderRoute(google_routes, route_index);
-  
-  var seconds = findHowManySecondsUntilIHaveToLeaveMyHouse(myRoute, chosenTimeIndex, start);
-  displayTimer(seconds);
-
-  populateDropDown(updatedRoutes, chosenRouteIndex, chosenTimeIndex, granolaArray, start);
+    var google_routes = updatedRoutes[0];
+    var route_index = updatedRoutes[chosenRouteIndex].google_index;
+    renderRoute(google_routes, route_index);
+    
+    var seconds = findHowManySecondsUntilIHaveToLeaveMyHouse(myRoute, chosenTimeIndex, start);
+    $(".mode").removeClass("bike");
+    $(".mode").removeClass("walk");
+    displayTimer(seconds);
+    
+    populateDropDown(updatedRoutes, chosenRouteIndex, chosenTimeIndex, granolaArray, start);
+  } else {
+    console.log("GRANOLA!!")
+    $.each(granolaArray, function(i,v){
+      if (v[0] === className) {
+        renderGranola(granolaArray, i);
+      }
+    });
+  }
 }
 
 function populateDropDown(routes, index, chosenTimeIndex, granolaArray, start) {
@@ -307,17 +323,13 @@ function populateDropDown(routes, index, chosenTimeIndex, granolaArray, start) {
   routes.unshift(google_routes[0]);
 
   $.each(granolaArray, function(i, value){
-    var time = value[3];
+    var time = value[2];
     $('.dropdownlist').append("<div class='"+value[0]+"'><li>"+value[0]+"</li><li>"+time+"</li></div>");
   });
 
   $('.dropdownlist > div').on('click', function(event){
-    if (this.id != "WALKING" && this.id != "BICYCLING"){
     event.preventDefault();
-    clearInterval(timer)
-    pushToPage(routes, this.className, this.id, granolaArray, start);
-    } else {
-      renderGranolaRoute(granolaArray, this.className);
-    }
+    clearInterval(timer);
+    pushToPage(routes, this.className, this.id, granolaArray, start, this.className);
   });
 }
