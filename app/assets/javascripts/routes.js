@@ -304,16 +304,16 @@ function populateDropDown(routes, index, granolaArray, start) {
 
   $.each(granolaArray, function(i, value){
     var time = value[3];
-    $('.dropdownlist').append("<div id='"+value[0]+"'><li>"+value[0]+"</li><li>"+time+"</li></div>");
+    $('.dropdownlist').append("<div class='"+value[0]+"'><li>"+value[0]+"</li><li>"+time+"</li></div>");
   });
 
   $('.dropdownlist > div').on('click', function(event){
-    if (this.id != "WALKING" && this.id != "BICYCLING"){
-    event.preventDefault();
-    clearInterval(timer)
-    pushToPage(routes, this.className, granolaArray, start);
+    event.preventDefault(); 
+    if (this.className != "WALKING" && this.className != "BICYCLING"){
+      clearInterval(timer)
+      pushToPage(routes, this.className, granolaArray, start);
     } else {
-      
+      renderGranolaRoute(granolaArray, this.className);
     }
   });
 }
