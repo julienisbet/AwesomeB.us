@@ -18,7 +18,7 @@ $(document).ready(function() {
                 granolaArray.slice(i, 1);
               }
             });
-            pushToPage(orderRoutes(routes), 1, granolaArray, start_in_seconds);
+            pushToPage(orderRoutes(routes), 1, 0, granolaArray, start_in_seconds);
           }
         });
       });
@@ -250,21 +250,41 @@ function orderRoutes(routes) {
   return routes
 }
 
-function pushToPage(routes, chosen_index, granolaArray, start) {
-  console.log("amaze");
-  console.log("routes before", routes);
-  var time_adjusted_routes = adjustAllTimesOnAllRoutes(routes, start);
-  console.log("routes after", time_adjusted_routes);
-  var google_routes = time_adjusted_routes[0];
-  var index = time_adjusted_routes[chosen_index].google_index;
-  var seconds = parseInt(time_adjusted_routes[chosen_index].leave_seconds[0]);
-  displayTimer(seconds);
-  renderRoute(google_routes, index);
-  renderTransitDetails(time_adjusted_routes[chosen_index]);
-  populateDropDown(time_adjusted_routes, chosen_index, granolaArray, start);
+function pushToPage(routes, chosenRouteIndex, chosenTimeIndex, granolaArray, start, className) {
+  if (className != "WALKING" && className != "BICYCLING"){
+    // console.log("routes", routes)
+    // console.log("chosenRouteIndex", chosenRouteIndex)
+    // console.log("chosenTimeIndex", chosenTimeIndex)
+    // console.log("granolaArray", granolaArray)
+    // console.log("start", start)
+
+    var updatedRoutes = updatePredictions(routes, start);
+    var myRoute = updatedRoutes[chosenRouteIndex];
+    var busLeavesAt = findWhatTimeMyBusLeaves(myRoute, chosenTimeIndex);
+    renderTransitDetails(myRoute, busLeavesAt);
+    
+
+    var google_routes = updatedRoutes[0];
+    var route_index = updatedRoutes[chosenRouteIndex].google_index;
+    renderRoute(google_routes, route_index);
+    
+    var seconds = findHowManySecondsUntilIHaveToLeaveMyHouse(myRoute, chosenTimeIndex, start);
+    $(".mode").removeClass("bike");
+    $(".mode").removeClass("walk");
+    displayTimer(seconds);
+    
+    populateDropDown(updatedRoutes, chosenRouteIndex, chosenTimeIndex, granolaArray, start);
+  } else {
+    console.log("GRANOLA!!")
+    $.each(granolaArray, function(i,v){
+      if (v[0] === className) {
+        renderGranola(granolaArray, i);
+      }
+    });
+  }
 }
 
-function populateDropDown(routes, index, granolaArray, start) {
+function populateDropDown(routes, index, chosenTimeIndex, granolaArray, start) {
   console.log("popdrop",routes)
   $('.dropdownlist > div').remove();
   var chosen_route = routes[index];
@@ -286,7 +306,7 @@ function populateDropDown(routes, index, granolaArray, start) {
     var next_depart_array = route.next_departures;
 
     $.each(next_depart_array, function(next_depart_index, next_depart) {
-      list.push({ bus_name: line_name, depart_mins: next_depart, route_index: (i+1)});
+      list.push({ bus_name: line_name, depart_mins: next_depart, route_index: (i+1), time_index: next_depart_index});
     });
   });
 
@@ -295,7 +315,7 @@ function populateDropDown(routes, index, granolaArray, start) {
   $.each(list, function(index, list_item) {
     if (index > 0) {
       if ((list_item.bus_name != list[index - 1].bus_name) && (list_item.depart_mins != list[index - 1].depart_mins)) {
-        $('.dropdownlist').append("<div class='"+list_item.route_index+"'><li>"+list_item.bus_name+"</li><li>"+list_item.depart_mins+" mins</li></div")
+        $('.dropdownlist').append("<div class='"+list_item.route_index+"' id='"+list_item.time_index+"'><li>"+list_item.bus_name+"</li><li>"+list_item.depart_mins+" mins</li></div")
       };
     };
   });
@@ -303,17 +323,13 @@ function populateDropDown(routes, index, granolaArray, start) {
   routes.unshift(google_routes[0]);
 
   $.each(granolaArray, function(i, value){
-    var time = value[3];
-    $('.dropdownlist').append("<div id='"+value[0]+"'><li>"+value[0]+"</li><li>"+time+"</li></div>");
+    var time = value[2];
+    $('.dropdownlist').append("<div class='"+value[0]+"'><li>"+value[0]+"</li><li>"+time+"</li></div>");
   });
 
   $('.dropdownlist > div').on('click', function(event){
-    if (this.id != "WALKING" && this.id != "BICYCLING"){
     event.preventDefault();
-    clearInterval(timer)
-    pushToPage(routes, this.className, granolaArray, start);
-    } else {
-      
-    }
+    clearInterval(timer);
+    pushToPage(routes, this.className, this.id, granolaArray, start, this.className);
   });
 }
