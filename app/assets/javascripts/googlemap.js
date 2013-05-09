@@ -101,19 +101,22 @@ function renderRoute(route_array, index) {
   directionsDisplay.setRouteIndex(index);
 }
 
-function renderGranola(routes, type) {
+function renderGranola(routes, index) {
   var route = routes[index][1];
   var duration = routes[index][2];
-  debugger
   initializeMap();
   directionsDisplay.setDirections(route);
-  if (route[0] == "WALKING") { 
-    // "walking.jpeg"
+  if (routes[index][0] == "WALKING") {
+    $(".mode").removeClass("bike");
+    $(".mode").addClass("walk");
+    $(".timer").hide();
   } else {
-    // "bike.jpeg"
+    $(".mode").removeClass("walk");
+    $(".mode").addClass("bike");
+    $(".timer").hide();
   }
-  $("#fetch .route").html(route[0]);
-  $("#fetch .leave").html(route[2]);
+  $("#fetch .route").html(routes[index][0]);
+  $("#fetch .leave").html(routes[index][2]);
 }
 
 function renderTransitDetails(route, busLeavesAt) {
