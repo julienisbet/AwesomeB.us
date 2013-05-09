@@ -61,10 +61,13 @@ function googleRoutes(cb) {
         var total_travel_time = google_route.legs[0].duration.value;
       //eliminate walking only routes
       var route_steps = google_route.legs[0].steps;
-      if (_.indexOf(route_steps, _.findWhere(route_steps, {travel_mode:"TRANSIT"})) == -1) {
+      console.log("route", route_steps, "isBARTRoute", isBARTRoute(route_steps))
+      if (isWalkingRoute(route_steps)) {
         len --;
-        //do something
-      } else {
+      } else if (isBARTRoute(route_steps)) {
+        len--
+      }
+      else {
         transitOrWalkingStep(google_steps, function(steps) {
           var route = {};
           route.steps = steps;
