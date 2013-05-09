@@ -308,7 +308,7 @@ function populateDropDown(routes, index, chosenTimeIndex, granolaArray, start) {
 
   $.each(granolaArray, function(i, value){
     var time = value[3];
-    $('.dropdownlist').append("<div id='"+value[0]+"'><li>"+value[0]+"</li><li>"+time+"</li></div>");
+    $('.dropdownlist').append("<div class='"+value[0]+"'><li>"+value[0]+"</li><li>"+time+"</li></div>");
   });
 
   $('.dropdownlist > div').on('click', function(event){
@@ -317,7 +317,7 @@ function populateDropDown(routes, index, chosenTimeIndex, granolaArray, start) {
     clearInterval(timer)
     pushToPage(routes, this.className, this.id, granolaArray, start);
     } else {
-      
+      renderGranolaRoute(granolaArray, this.className);
     }
   });
 }

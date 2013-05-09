@@ -105,7 +105,7 @@ function renderRoute(route_array, index) {
   directionsDisplay.setRouteIndex(index);
 }
 
-function renderGranola(routes, index) {
+function renderGranola(routes, type) {
   var route = routes[index][1];
   var duration = route[3];
   initializeMap();
