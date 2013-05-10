@@ -2,7 +2,7 @@ function noPredictionErrors(steps) {
   var blah = false;
   $.each(steps, function(index, step) {
     if (step.travel_mode == "TRANSIT") {
-      if (step.transit_seconds instanceof Array) { blah = true; }
+      if (step.seconds_until_departure instanceof Array) { blah = true; }
     }
   })
   return blah;

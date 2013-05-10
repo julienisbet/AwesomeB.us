@@ -42,11 +42,11 @@ function getEndLoc() {
 //   return (query_url + "&mode=transit")
 // }
 
-function TransitStep(step, transit_seconds, google_step) {
+function TransitStep(step) {
   this.travel_mode = step.travel_mode;
   this.travel_time = step.duration.value;
-  this.start_latitude = roundNumber(step.transit.departure_stop.location.lat(), 5);
-  this.start_longitude = roundNumber(step.transit.departure_stop.location.lng(), 5);
+  this.start_latitude = step.transit.departure_stop.location.lat();
+  this.start_longitude = step.transit.departure_stop.location.lng();
   this.agency = step.transit.line.agencies[0].name;
   this.direction = step.transit.headsign;
   this.start_stop_name = step.transit.departure_stop.name;
@@ -55,8 +55,35 @@ function TransitStep(step, transit_seconds, google_step) {
   this.end_longitude = step.end_location.lng();
   this.line_name = step.transit.line.name;
   this.line_short_name = step.transit.line.short_name;
-  this.transit_seconds = transit_seconds;
-  this.google_step = google_step;
+  this.google_step = step;
+  this.muni_request_complete = false;
+  this.seconds_until_departure = null;
+
+}
+
+TransitStep.prototype.getTransitSeconds = function() {
+  if (this.agency == "San Francisco Municipal Transportation Agency") {
+    // var line_short = step.transit.line.short_name;
+    if (this.line_short_name == "CALIFORNIA" || this.line_short_name == "Powell-Hyde" || this.line_short_name == "Powell-Mason") {
+      this.seconds_until_departure = {no_prediction: "cablecar" };
+      self.muni_request_complete = true;
+    } else {
+      var stopTagQueryURL = nextBusStopTag(this.line_short_name);
+      // var prediction_seconds = [];
+
+      var self = this;
+      $.get(stopTagQueryURL, function(result) {
+        var all_next_bus_line_info = $.xml2json(result);
+        var all_stops_on_line = all_next_bus_line_info.route.stop;
+        var right_stop = getTheRightStop(all_stops_on_line, self);
+
+        getPredictions(right_stop, self, function(seconds) {
+            self.seconds_until_departure = seconds;
+            self.muni_request_complete = true;
+        });
+      })//end of nextbus stops get
+    }
+  }//end of check agency if
 }
 
 function WalkingStep(step) {

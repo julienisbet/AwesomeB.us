@@ -9,13 +9,13 @@ function updatePredictions(routes, startTime) {
         walkTime = step.travel_time;
       }
       if (step.travel_mode == "TRANSIT") {
-        $.each(step.transit_seconds, function(seconds_index, seconds) {
+        $.each(step.seconds_until_departure, function(seconds_index, seconds) {
           var prediction = seconds - (now - startTime) - walkTime;
           if (prediction > 0) {
             predicted_seconds.push(prediction);
           };
         });
-        step.transit_seconds = predicted_seconds;
+        step.seconds_until_departure = predicted_seconds;
       };
     });
   });
@@ -26,7 +26,7 @@ function findWhatTimeMyBusLeaves(route, chosenTimeIndex) {
   var leavesIn;
   $.each(route.steps, function(step_index, step) {
     if (step.travel_mode == "TRANSIT") {
-      var choice = parseInt(step.transit_seconds[chosenTimeIndex]);
+      var choice = parseInt(step.seconds_until_departure[chosenTimeIndex]);
       var now = Math.round(new Date()/1000.0);
       leavesIn = now + choice;
       return false;
@@ -39,7 +39,7 @@ function findHowManySecondsUntilIHaveToLeaveMyHouse(route, chosenTimeIndex, star
   var seconds;
   $.each(route.steps, function(step_index, step) {
     if (step.travel_mode == "TRANSIT") {
-      seconds = step.transit_seconds[chosenTimeIndex];
+      seconds = step.seconds_until_departure[chosenTimeIndex];
       return false;
     }
   })
