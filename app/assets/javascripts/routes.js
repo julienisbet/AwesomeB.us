@@ -1,5 +1,6 @@
 $(document).ready(function() {
-  getLocation();
+  enableAutocomplete();
+  getLocation(); //see geoloc.js
 
   $('a.go').on('click', function(e) {
     e.preventDefault();
@@ -8,7 +9,7 @@ $(document).ready(function() {
       saveHistory();
       // calcGranolaRoutes();
       var start_in_seconds = Math.round(new Date()/1000.0);
-      googleRoutes(function (routes) {
+      assembleABRoutes(function (routes) {
         var granolaArray = [];
         calcGranolaRoutes(function (granola) { 
           granolaArray.push(granola);
@@ -33,116 +34,111 @@ function clickedGo() {
   $('a.home').show();
 };
 
-function googleRoutes(cb) {
-  var start_loc;
-  var geo_loc = $('.geolocation')[0].id;
-  if (getStartLoc() == 'Current Location') { start_loc = geo_loc }
-    else { start_loc = getStartLoc() }
-    var end_loc   = getEndLoc();
-    var dep_time  = getDepTime();
-    var arr_time  = getArrTime();
-    var routes = [];
 
-    calcRoutes(start_loc, end_loc, function(routes_array) {
-      var google_routes = routes_array.routes;
-      routes.push(routes_array);
-      console.log("OG Googs", routes_array)
+function assembleABRoutes(cb) {
+  var start_loc = findStartLocation();
+  var end_loc   = getEndLoc();
+  var routes = [];
 
-      var len = google_routes.length;
+  calcRoutes(start_loc, end_loc, function(routes_array) {
+    var google_routes = routes_array.routes;
+    routes.push(routes_array);
+    console.log("OG Googs", routes_array)
 
-      function areWeDone() {
-        if (routes.length == (len + 1)) {
+    var muniRoutes = removeRoutesWithoutTransitSteps(google_routes);
+    var muniLength = muniRoutes.length;//
+
+    $.each(muniRoutes, function(index, google_route) {
+      var total_travel_time = google_route.legs[0].duration.value;
+      var google_steps = google_route.legs[0].steps;
+
+      transitOrWalkingStep(google_steps, function(steps) {
+        var route = {};
+        route.steps = steps;
+        if (noPredictionErrors(steps)) {
+          var leave_seconds = calculateSecondsToLeaveIn(steps);
+          route.leave_seconds = leave_seconds;
+          var leave_times = calculateTimeToLeaveAt(steps);
+          route.leave_times = leave_times;
+          // var arrive_times = calculateTimeToArriveAt(route.leave_times, total_travel_time);
+          // route.arrive_times = arrive_times;
+          var next_departures = nextDeparturesInMinutes(steps);
+          route.next_departures = next_departures;
+          // var bus_arrival_times = calculateBusArrival(steps);
+          // route.bus_arrival = bus_arrival_times;
+        } else {
+          route.leave_seconds = "x"; 
+          route.leave_times = "x";
+          route.arrive_times = "x";
+        }//end of no prediction errors if else
+        route.google_index = index;
+        route.total_travel_time = total_travel_time;
+        routes.push(route);
+
+        if (compareArrayLengths(routes.length, (muniLength + 1))) {
           cb(routes);
         }
-      }
-
-      $.each(google_routes, function(index, google_route) {
-        var google_steps = google_route.legs[0].steps;
-        var total_travel_time = google_route.legs[0].duration.value;
-      //eliminate walking only routes
-      var route_steps = google_route.legs[0].steps;
-      if (_.indexOf(route_steps, _.findWhere(route_steps, {travel_mode:"TRANSIT"})) == -1) {
-        len --;
-        //do something
-      } else {
-        transitOrWalkingStep(google_steps, function(steps) {
-          var route = {};
-          route.steps = steps;
-          if (noPredictionErrors(steps)) {
-            var leave_seconds = calculateSecondsToLeaveIn(steps);
-            route.leave_seconds = leave_seconds;
-            var leave_times = calculateTimeToLeaveAt(steps);
-            route.leave_times = leave_times;
-            var arrive_times = calculateTimeToArriveAt(route.leave_times, total_travel_time);
-            route.arrive_times = arrive_times;
-            var next_departures = nextDeparturesInMinutes(steps);
-            route.next_departures = next_departures;
-            var bus_arrival_times = calculateBusArrival(steps);
-            route.bus_arrival = bus_arrival_times;
-          } else {
-            route.leave_seconds = "x";
-            route.leave_times = "x";
-            route.arrive_times = "x";
-          }//end of no prediction errors if else
-          route.google_index = index;
-          route.total_travel_time = total_travel_time;
-          routes.push(route);
-
-          areWeDone();
-        });
-      }; //end of else
+      });
     })//end of each
   });
+}
+
+function findStartLocation() {
+  var start_loc;
+  var geo_loc = $('.geolocation')[0].id;
+  if (getStartLoc() == 'Current Location') {
+    start_loc = geo_loc;
+  } else { 
+    start_loc = getStartLoc();
+  }
+  return start_loc;
+}
+
+function compareArrayLengths(lengthOfOneArray, lengthOfOtherArray) {
+  if (lengthOfOneArray == lengthOfOtherArray) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function removeRoutesWithoutTransitSteps(routes) {
+  var onlyMuniRoutes = [];
+  $.each(routes, function(index, route) {
+    var steps = route.legs[0].steps;
+    if (!isWalkingRoute(steps) && !isBARTRoute(steps)) { onlyMuniRoutes.push(route); }
+  });
+  return onlyMuniRoutes;
 }
 
 function transitOrWalkingStep(steps_array, cb) { //json array
   var steps = []
   var len = steps_array.length;
 
-  steps_array = steps_array.map(function (el, index) {
-    return { index: index, el: el };
-  });
-
-  function areWeDoneStep() {
-    if (steps.length === len) {
-      steps.sort(function (a, b) { return a.index - b.index });
-      cb(steps.map(function (el) { return el.el }));
-    }
-  }
-
-  $.each(steps_array, function(step_index, step){
+  _.each(steps_array, function(step){
     var current_step;
-    if (step.el.travel_mode == "WALKING") {
-      current_step = new WalkingStep(step.el);
-      steps.push({ el: current_step, index: step.index });
-      areWeDoneStep();
+    if (step.travel_mode == "WALKING") {
+      current_step = new WalkingStep(step);
     } else {
-      getRealTimeTransitData(step.el, function (sec) {
-        current_step = new TransitStep(step.el, sec, step.el);
-        steps.push({ el: current_step, index: step.index });
-        areWeDoneStep();
-      });
-    }//end of travel mode if
-  })//end of steps each
+      current_step = new TransitStep(step);
+      current_step.getTransitSeconds();
+    }
+
+    steps.push(current_step);
+  })
+
+  var interval = setInterval(function(){
+    if(muniRequestsComplete(steps)) {
+      clearInterval(interval);
+      cb(steps);
+    }
+  }, 100);
 }
 
-function getRealTimeTransitData(step, callback) {
-  if (step.transit.line.agencies[0].name == "San Francisco Municipal Transportation Agency") {
-    var line_short = step.transit.line.short_name;
-    if (line_short == "CALIFORNIA" || line_short == "Powell-Hyde" || line_short == "Powell-Mason") {
-      callback({ no_prediction: "cablecar" });
-    } else {
-      var stopTagQueryURL = nextBusStopTag(line_short);
-      var prediction_seconds = [];
-
-      $.get(stopTagQueryURL, function(result) {
-        var all_next_bus_line_info = $.xml2json(result);
-        var all_stops_on_line = all_next_bus_line_info.route.stop;
-        var right_stop = getTheRightStop(all_stops_on_line, step)
-        getPredictions(right_stop, step, callback);
-      })//end of nextbus stops get
-    }
-  }//end of check agency if
+function muniRequestsComplete(steps) {
+  return _.every(steps, function(step) {
+    return step.travel_mode == "WALKING" || step.muni_request_complete;
+  })
 }
 
 function getTheRightStop(stops_array, step) {
@@ -162,15 +158,15 @@ function getTheRightStop(stops_array, step) {
 function stopHasMatchingLatLong(stop, step, decimal) {
   var rounded_stop_latitude = roundNumber(stop.lat, decimal);
   var rounded_stop_longitude = roundNumber(stop.lon, decimal);
-  var rounded_step_latitude = roundNumber(step.transit.departure_stop.location.lat(), decimal);
-  var rounded_step_longitude = roundNumber(step.transit.departure_stop.location.lng(), decimal);
+  var rounded_step_latitude = roundNumber(step.start_latitude, decimal);
+  var rounded_step_longitude = roundNumber(step.start_longitude, decimal);
   if (rounded_stop_longitude == rounded_step_longitude && rounded_stop_latitude == rounded_step_latitude) { return true }
     return false
 }
 
 function getPredictions(stop, step, callback) {
 
-  var predictionsQueryURL = nextBusPredictions(step.transit.line.short_name, stop.tag);
+  var predictionsQueryURL = nextBusPredictions(step.line_short_name, stop.tag);
   $.get(predictionsQueryURL, function(result) {
     var all_prediction_info = $.xml2json(result);
     var direction = all_prediction_info.predictions.direction;
@@ -198,7 +194,7 @@ function calculateSecondsToLeaveIn(steps_array) {
   var walk_time = (firstStepIsWalking(steps_array)) ? ( steps_array[0].travel_time ) : ( 0 );
   $.each(steps_array, function(step_index, step) {
     if (step.travel_mode == "TRANSIT") {
-      var muni_seconds = step.transit_seconds;
+      var muni_seconds = step.seconds_until_departure;
       $.each(muni_seconds, function(index, second_value) {
         var sec = secondsToLeaveIn(second_value, walk_time);
         if (sec > 0) { seconds.push(sec); }
@@ -218,7 +214,7 @@ function calculateTimeToLeaveAt(steps_array) {
   var walk_time = (firstStepIsWalking(steps_array)) ? ( steps_array[0].travel_time ) : ( 0 );
   $.each(steps_array, function(step_index, step) {
     if (step.travel_mode == "TRANSIT") {
-      var muni_seconds = step.transit_seconds;
+      var muni_seconds = step.seconds_until_departure;
       $.each(muni_seconds, function(index, second_value) {
         var now = leaveTimeInSeconds(0, 0);
         var leave_time = leaveTimeInSeconds(second_value, walk_time);
@@ -311,7 +307,9 @@ function populateDropDown(routes, index, chosenTimeIndex, granolaArray, start) {
   });
 
   list.sort(function(a,b) { return a.depart_mins - b.depart_mins });
-
+  console.log("list before", list)
+  list = list.slice(0, 5);
+  console.log("list after", list)
   $.each(list, function(index, list_item) {
     if (index > 0) {
       if ((list_item.bus_name != list[index - 1].bus_name) && (list_item.depart_mins != list[index - 1].depart_mins)) {

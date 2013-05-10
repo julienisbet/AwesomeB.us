@@ -17,7 +17,7 @@ function nextDeparturesInMinutes(steps_array) {
   var minutes = [];
   $.each(steps_array, function(index, step) {
     if (step.travel_mode == "TRANSIT") {
-      $.each(step.transit_seconds, function(index, sec) {
+      $.each(step.seconds_until_departure, function(index, sec) {
         if (secondsToLeaveIn(sec, walk_time) > 0) { minutes.push(roundNumber((sec / 60), 0)) }
       })
     }
@@ -30,7 +30,7 @@ function calculateBusArrival(steps_array) {
   var bus_arrival = [];
   $.each(steps_array, function(i, step) {
     if (step.travel_mode == "TRANSIT") {
-      var seconds = step.transit_seconds;
+      var seconds = step.seconds_until_departure;
       $.each(seconds, function(i, sec) {
         bus_arrival.push(nowInEpochSeconds + parseInt(sec));
       });
