@@ -104,7 +104,6 @@ function compareArrayLengths(lengthOfOneArray, lengthOfOtherArray) {
 
 function removeRoutesWithoutTransitSteps(routes) {
   var onlyMuniRoutes = [];
-
   $.each(routes, function(index, route) {
     var steps = route.legs[0].steps;
     if (!isWalkingRoute(steps) && !isBARTRoute(steps)) { onlyMuniRoutes.push(route); }

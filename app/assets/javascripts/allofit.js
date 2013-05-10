@@ -42,6 +42,7 @@ function getEndLoc() {
 //   return (query_url + "&mode=transit")
 // }
 
+
 function TransitStep(step) {
   this.travel_mode = step.travel_mode;
   this.travel_time = step.duration.value;
