@@ -71,8 +71,8 @@ function calcGranolaRoutes(responseHandler) {
   if (getStartLoc() == 'Current Location') { start_loc = geo_loc }
     else { start_loc = getStartLoc() }
   var end_loc   = getEndLoc();
-  var dep_time  = getDepTime();
-  var arr_time  = getArrTime();
+  // var dep_time  = getDepTime();
+  // var arr_time  = getArrTime();
   calcRouteWalk(start_loc, end_loc, function(walkRoute){
     var walkDuration = bikeOrWalkDuration(walkRoute)[0];
     var walk = ["WALKING", walkRoute, walkDuration];

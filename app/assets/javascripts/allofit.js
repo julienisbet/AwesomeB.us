@@ -22,31 +22,32 @@ function getEndLoc() {
   return loc;
 }
 
-function getDepTime() {
-  var dep_time = Math.round(new Date().getTime()/1000);
-  return dep_time;
-}
+// function getDepTime() {
+//   var dep_time = Math.round(new Date().getTime()/1000);
+//   return dep_time;
+// }
 
-function getArrTime() {
-  var arr_time = Math.round(new Date().getTime()/1000) + 3600;
-  return arr_time;
-}
+// function getArrTime() {
+//   var arr_time = Math.round(new Date().getTime()/1000) + 3600;
+//   return arr_time;
+// }
 
-function googleQueryUrl(start_loc, end_loc, dep_time) {
-  var query_url = "https://maps.googleapis.com/maps/api/directions/json?alternatives=true&origin=";
-  query_url += start_loc;
-  query_url += "&destination=";
-  query_url += end_loc;
-  query_url += "&sensor=false&departure_time=";
-  query_url += dep_time;
-  return (query_url + "&mode=transit")
-}
+// function googleQueryUrl(start_loc, end_loc, dep_time) {
+//   var query_url = "https://maps.googleapis.com/maps/api/directions/json?alternatives=true&origin=";
+//   query_url += start_loc;
+//   query_url += "&destination=";
+//   query_url += end_loc;
+//   query_url += "&sensor=false&departure_time=";
+//   query_url += dep_time;
+//   return (query_url + "&mode=transit")
+// }
 
-function TransitStep(step, transit_seconds, google_step) {
+
+function TransitStep(step) {
   this.travel_mode = step.travel_mode;
   this.travel_time = step.duration.value;
-  this.start_latitude = roundNumber(step.transit.departure_stop.location.lat(), 5);
-  this.start_longitude = roundNumber(step.transit.departure_stop.location.lng(), 5);
+  this.start_latitude = step.transit.departure_stop.location.lat();
+  this.start_longitude = step.transit.departure_stop.location.lng();
   this.agency = step.transit.line.agencies[0].name;
   this.direction = step.transit.headsign;
   this.start_stop_name = step.transit.departure_stop.name;
@@ -55,8 +56,35 @@ function TransitStep(step, transit_seconds, google_step) {
   this.end_longitude = step.end_location.lng();
   this.line_name = step.transit.line.name;
   this.line_short_name = step.transit.line.short_name;
-  this.transit_seconds = transit_seconds;
-  this.google_step = google_step;
+  this.google_step = step;
+  this.muni_request_complete = false;
+  this.seconds_until_departure = null;
+
+}
+
+TransitStep.prototype.getTransitSeconds = function() {
+  if (this.agency == "San Francisco Municipal Transportation Agency") {
+    // var line_short = step.transit.line.short_name;
+    if (this.line_short_name == "CALIFORNIA" || this.line_short_name == "Powell-Hyde" || this.line_short_name == "Powell-Mason") {
+      this.seconds_until_departure = {no_prediction: "cablecar" };
+      this.muni_request_complete = true;
+    } else {
+      var stopTagQueryURL = nextBusStopTag(this.line_short_name);
+      // var prediction_seconds = [];
+
+      var self = this;  
+      $.get(stopTagQueryURL, function(result) {
+        var all_next_bus_line_info = $.xml2json(result);
+        var all_stops_on_line = all_next_bus_line_info.route.stop;
+        var right_stop = getTheRightStop(all_stops_on_line, self);
+
+        getPredictions(right_stop, self, function(seconds) {
+            self.seconds_until_departure = seconds;
+            self.muni_request_complete = true;
+        });
+      })//end of nextbus stops get
+    }
+  }//end of check agency if
 }
 
 function WalkingStep(step) {
@@ -66,12 +94,12 @@ function WalkingStep(step) {
   this.start_longitude = roundNumber(step.start_location.lng(), 5);
 }
 
-function Trip(start_loc, end_loc, dep_time, arr_time) {
-  this.start_loc = start_loc;
-  this.end_loc = end_loc;
-  this.dep_time = dep_time;
-  this.arr_time = arr_time;
-}
+// function Trip(start_loc, end_loc, dep_time, arr_time) {
+//   this.start_loc = start_loc;
+//   this.end_loc = end_loc;
+//   this.dep_time = dep_time;
+//   this.arr_time = arr_time;
+// }
 
 function nextBusStopTag(line_short_name) {
   var stop_tag_url = "http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=sf-muni&r=";
@@ -87,12 +115,12 @@ function nextBusPredictions(line_short_name, stop_tag_name) {
   return prediction_url
 }
 
-function Departure(name) {
-  this.tag_name = name;
-  this.departure_seconds = [];
-  this.leave_in_seconds = [];
-  this.leave_at_times = [];
-}
+// function Departure(name) {
+//   this.tag_name = name;
+//   this.departure_seconds = [];
+//   this.leave_in_seconds = [];
+//   this.leave_at_times = [];
+// }
 
 function addError(error){
   $('.error_message').html(error);
@@ -110,3 +138,4 @@ function isBARTRoute(route_steps){
 function isCableCarRoute(){
 
 }
+
