@@ -67,7 +67,7 @@ function assembleABRoutes(cb) {
           // var bus_arrival_times = calculateBusArrival(steps);
           // route.bus_arrival = bus_arrival_times;
         } else {
-          route.leave_seconds = "x";
+          route.leave_seconds = "x"; 
           route.leave_times = "x";
           route.arrive_times = "x";
         }//end of no prediction errors if else
@@ -308,7 +308,9 @@ function populateDropDown(routes, index, chosenTimeIndex, granolaArray, start) {
   });
 
   list.sort(function(a,b) { return a.depart_mins - b.depart_mins });
-
+  console.log("list before", list)
+  list = list.slice(0, 5);
+  console.log("list after", list)
   $.each(list, function(index, list_item) {
     if (index > 0) {
       if ((list_item.bus_name != list[index - 1].bus_name) && (list_item.depart_mins != list[index - 1].depart_mins)) {

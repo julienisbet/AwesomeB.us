@@ -66,12 +66,12 @@ TransitStep.prototype.getTransitSeconds = function() {
     // var line_short = step.transit.line.short_name;
     if (this.line_short_name == "CALIFORNIA" || this.line_short_name == "Powell-Hyde" || this.line_short_name == "Powell-Mason") {
       this.seconds_until_departure = {no_prediction: "cablecar" };
-      self.muni_request_complete = true;
+      this.muni_request_complete = true;
     } else {
       var stopTagQueryURL = nextBusStopTag(this.line_short_name);
       // var prediction_seconds = [];
 
-      var self = this;
+      var self = this;  
       $.get(stopTagQueryURL, function(result) {
         var all_next_bus_line_info = $.xml2json(result);
         var all_stops_on_line = all_next_bus_line_info.route.stop;
